@@ -1,22 +1,20 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
+import { Image, StyleSheet, Platform, Text } from 'react-native';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import CompanyContainer from '@/components/CompanyContainer';
+import HorizontalScroll from '@/components/HorizontalScroll';
 
 export default function HomeScreen() {
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
       headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
+        <Image />
       }>
-        <CompanyContainer />
+        <Text style={styles.headerContainer}>Restaurants</Text>
+        <HorizontalScroll />
+        <Text style={styles.headerContainer}>Businesses</Text>
+        <HorizontalScroll />
+        <HorizontalScroll />
+        <HorizontalScroll />
     </ParallaxScrollView>
   );
 }
@@ -26,6 +24,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    color: '#fff',
+    gap: 8,
+    fontSize: 24,
+
   },
   stepContainer: {
     gap: 8,

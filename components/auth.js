@@ -1,15 +1,16 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
-import { FIREBASE_AUTH, FIREBASE_DB } from "../FirebaseConfig";
-import { addDoc, collection } from "firebase/firestore";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, getAuth } from "firebase/auth";
+import { FIREBASE_AUTH } from "../FirebaseConfig";
 
 //creates account with email and password
 export const doCreateUserWithEmailAndPassword = async (email, password) => {
-    const userCollectionRef = collection(FIREBASE_DB, "users");
-    await addDoc(userCollectionRef, { 
+    await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
+    const userID = getAuth().currentUser.uid;
+    await setDoc(doc(db, 'users', userID), {
         email: email,
-        saved: []
-     });
-    return await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
+        saved: [],
+        roles: ['user']
+    });
+    return;
 }
 
 //signs in with email and password

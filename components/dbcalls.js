@@ -1,5 +1,5 @@
-import { FIREBASE_AUTH, FIREBASE_DB } from "../FirebaseConfig";
-import { addDoc, collection } from "firebase/firestore";
+import { FIREBASE_DB } from "../FirebaseConfig";
+import { addDoc, collection, doc, getDoc, getDocs, onSnapshot, query, where } from "firebase/firestore";
 
 /* create a document with the business' 
 name, description, phone number, and address */
@@ -35,4 +35,60 @@ export const createBusinessRequest = async (name, description, phoneNumber, addr
     catch (error) {
         return error;
     }
+}
+
+// checks if user is an admin
+export const checkIfUserIsAdmin = async (user) => {
+    try {
+        const userCollectionRef = collection(FIREBASE_DB, "users");
+        const userDoc = await getDoc(userCollectionRef, user.uid);
+        if (userDoc.exists()) {
+            return userDoc.data().contains("admin");
+        }
+        else {
+            console.error('userDoc does not exist');
+            return false;
+        }
+    }
+    catch (error) {
+        return error;
+    }
+}
+
+// return an array of all pending businesses
+export const getArrayOfPendingBusinessesFromRequests = async () => {
+
+}
+
+
+// return collection of business requests from db
+export const returnBusinessRequestCollectionRef = () => {
+    const returnCollection = collection(FIREBASE_DB, "businessRequests");
+    return returnCollection;
+}
+
+// return listener to collection of pending business requests
+export const subscribeToPendingBusinesses = (setArrayOfPendingBusinesses) => {
+    try {
+        const collectionRef = collection(FIREBASE_DB, "businessRequests");
+        const businessQuery = query(collectionRef, where("name", "!=", ""));
+        const unsub = onSnapshot(businessQuery, (snapshot) => {
+                const tempArrayOfPendingBusinesses = [];
+                snapshot.forEach((doc) => {
+                    tempArrayOfPendingBusinesses.push({
+                        name: doc.data().name,
+                        phoneNumber: doc.data().phonenumber,
+                        photos: doc.data().photos,
+                        address: doc.data().address,
+                        description: doc.data().description,                    
+                    });
+                });
+                setArrayOfPendingBusinesses(tempArrayOfPendingBusinesses);
+            })
+            return unsub;
+     }
+     catch(error) {
+        console.error('error returning query of business requests: ', error);
+        return[];
+     }
 }

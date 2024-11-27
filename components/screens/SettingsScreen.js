@@ -1,6 +1,6 @@
 import { useTheme } from '@react-navigation/native';
 import React, { useContext, useState } from 'react';
-import { StyleSheet, Text, View, Button, TouchableOpacity, Touchable } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Switch } from 'react-native-gesture-handler';
 import { ThemeContext } from '../contexts/ThemeContext';
 import LanguageButton from '../settings-components/LanguageButton';

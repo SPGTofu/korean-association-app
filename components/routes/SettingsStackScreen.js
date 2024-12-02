@@ -7,6 +7,7 @@ import AccountSettings from "../screens/AccountSettings";
 import Saved from "../screens/Saved";
 import SubmitPage from "../screens/SubmitPage";
 import ReviewPage from "../screens/ReviewPage";
+import PendingBusinessPage from "../screens/PendingBusinessPage";
 
 const SettingsStack = createStackNavigator();
 
@@ -28,6 +29,7 @@ export default function SettingStackScreen() {
                 <SettingsStack.Screen name = "SavedBusinesses" component = {Saved} options={{title: 'Saved'}}/>
                 <SettingsStack.Screen name = "SubmitPage" component = {SubmitPage} options={{title: 'Submit a Page'}}/>
                 <SettingsStack.Screen name = "ReviewPage" component = {ReviewPage} options={{title: 'Review Pages'}}/>
+                <SettingsStack.Screen name = "PendingBusinessPage" component = {PendingBusinessPage} options={{title: 'Review Pages'}}/>
             </SettingsStack.Navigator>
         </SignPageContext.Provider>
     )

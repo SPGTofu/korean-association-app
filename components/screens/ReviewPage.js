@@ -20,6 +20,10 @@ export default function ReviewPage({navigation}) {
         return () => unsub();
     }, []);
 
+    useEffect(() => { 
+        console.log(arrayOfPendingBusinesses);
+    }, [arrayOfPendingBusinesses])
+
     if (loading) {
         return (
             <ScrollView contentContainerStyle = {styles.loadingPageContainer}>
@@ -37,6 +41,7 @@ export default function ReviewPage({navigation}) {
                     <ReviewPageCard 
                         key = {business.name}
                         data= {business}
+                        navigation = {navigation}
                     />
                 ))) : 
                 (<Text style = {{fontSize: 18, 

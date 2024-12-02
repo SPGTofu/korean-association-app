@@ -20,7 +20,7 @@ export const addBusinessWithData = async (name, description, phoneNumber, addres
 }
 
 // create a document in businessRequests to await approval for a publish 
-export const createBusinessRequest = async (name, description, phoneNumber, address, photosArray) => {
+export const createBusinessRequest = async (name, description, phoneNumber, address, photosArray, user) => {
     try {
         const businessRequestCollectionRef = collection(FIREBASE_DB, "businessRequests");
         await addDoc(businessRequestCollectionRef, {
@@ -28,7 +28,8 @@ export const createBusinessRequest = async (name, description, phoneNumber, addr
             description: description,
             phonenumber: phoneNumber,
             address: address,
-            photos: [...photosArray]
+            photos: [...photosArray],
+            publisher: user
         });
         return;
     }

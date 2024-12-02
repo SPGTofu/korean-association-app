@@ -47,7 +47,7 @@ export default function SubmitPage({ navigation }) {
         }
         try {
             createBusinessRequest(businessName, businessDescription, 
-                                  businessPhoneNumber, businessAddress, imageUriArray);
+                                  businessPhoneNumber, businessAddress, imageUriArray, user);
             handleCreateToast('success', 'Reuqest sent. Pending approval', 'bottom');
             nameRef.current.clear();
             addressRef.current.clear();
@@ -129,7 +129,7 @@ export default function SubmitPage({ navigation }) {
                 <Text style = {{fontSize: 11, marginBottom: 4, color: colors.text}}>Limit of 12 photos</Text>
                 <View style = {[styles.photoContainer, {borderColor: colors.text}]}>
                     <FlatList 
-                        horizontal = {true}
+                        horizontal
                         alwaysBounceHorizontal
                         data = {imageUriArray}
                         keyExtractor = {(item) => item.uri}

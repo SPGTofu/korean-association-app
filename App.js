@@ -13,6 +13,7 @@ import { FIREBASE_AUTH } from './FirebaseConfig';
 const Tab = createBottomTabNavigator();
 
 export default function App() { 
+
   //setup for dark and light theme
   const [theme, setTheme] = useState('Light');
   const themeData = {theme, setTheme};

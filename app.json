@@ -13,12 +13,14 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.korean-association-app"
+      "bundleIdentifier": "com.anonymous.korean-association-app",
+      "newArchEnabled": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ffffff",
+        "newArchEnabled": true
       }
     },
     "web": {
@@ -28,7 +30,20 @@
       "expo-image-picker",
       {
         "photosPermission": "The app accesses your photos to upload online."
-      }
+      },
+      [
+          "react-native-radar", {
+          "iosFraud": true,
+          "iosNSLocationWhenInUseUsageDescription": "Your location permission prompt",
+          "iosNSLocationAlwaysAndWhenInUseUsageDescription": "Your location permission prompt",
+          "iosBackgroundMode": true,
+          "androidFraud": true,
+          "androidBackgroundPermission": true,
+          "androidFineLocationPermission": true,
+          "addRadarSDKMotion":true
+        }
+      ],
+      ["@maplibre/maplibre-react-native"]
     ]
   }
 }

@@ -1,17 +1,34 @@
 import { NavigationContext, useTheme } from "@react-navigation/native";
-import React, { useContext } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import noImageIcon from "../../assets/no-image-icon.jpg"
+import { getImageFromStorage } from "../storagecalls";
 
 export default function ReviewPageCard(props) {
     const { colors } = useTheme();
     const { navigation, data } = props;
+    const [firstImage, setFirstImage] = useState(null);
+
+    useEffect(() => {
+        const fetchFirstImage = async () => {
+            if (data?.photos?.[0]) {
+                try {
+                    const firstImageUrl = await getImageFromStorage(data.name, data.photos[0]);
+                    setFirstImage(firstImageUrl);
+                } catch (error) {
+                    console.error("Error fetching first image: ", error);
+                }
+            }
+        }
+        fetchFirstImage();
+        console.log('using effect in ReviewPageCard');
+    }, [data]);
 
     return (
         <TouchableOpacity onPress = {() => navigation.navigate('PendingBusinessPage', { businessData: data })}>
             <View  style = {[{borderColor: colors.text}, styles.cardContainer]}>
                 <Image
-                    source = {noImageIcon}
+                    source = {firstImage? { uri: firstImage }: noImageIcon}
                     style = {styles.imageContainer}
                 />
                 <View style = {styles.textContainer}>

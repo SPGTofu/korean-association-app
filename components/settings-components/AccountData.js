@@ -21,7 +21,7 @@ export default function AccountData({ navigation }) {
                 </TouchableOpacity>
             </View>
             <View style = {[{borderBottomWidth: 1, borderBottomColor: colors.text}, styles.button]}>
-                <TouchableOpacity onPress = {() => navigation.navigate('SubmitPage')}>
+                <TouchableOpacity onPress = {() => navigation.navigate('SubmitPageStack')}>
                     <Text style = {[{color: colors.text}, styles.text]}>Submit a New Business</Text>
                 </TouchableOpacity>
             </View>

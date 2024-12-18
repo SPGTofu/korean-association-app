@@ -1,171 +1,121 @@
 import { useTheme } from "@react-navigation/native";
-import { UserContext } from "../contexts/UserContext";
-import { useContext, useRef, useState } from "react";
-import { ActivityIndicator, FlatList, Image, Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
-import { handleCreateToast } from "../settings-components/Toast";
-import Toast from "react-native-toast-message";
-import { createBusinessRequest } from "../dbcalls";
-import * as ImagePicker from 'expo-image-picker';
+import { useContext } from "react";
+import { Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
+import { SubmitPageStackScreenContext } from "../contexts/SubmitPageStackScreenContext";
 
-export default function SubmitPage({ navigation }) {
-    const [businessName, setBusinessName] = useState('');
-    const [businessDescription, setBusinessDescription] = useState('');
-    const [businessPhoneNumber, setBusinessPhoneNumber] = useState('');
-    const [businessAddress, setBusinessAddress] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [imageUriArray, setImageUriArray] = useState([]);
-    const nameRef = useRef(null);
-    const addressRef = useRef(null);
-    const descriptionRef = useRef(null);
-    const numberRef = useRef(null);
-    const { user } = useContext(UserContext);
+export default function SubmitPage() {
+    const { setBusinessData } = useContext(SubmitPageStackScreenContext);
     const { colors } = useTheme();
-
-    // handles submit when button is pressed
-    const handleSubmitPage = () => {
-        Keyboard.dismiss();
-        setLoading(true);
-        if (businessName == '') {
-            handleCreateToast('error', 'Please enter the business name', 'bottom');
-            setLoading(false);
-            return;
-        }
-        if (businessPhoneNumber == '') {
-            handleCreateToast('error', 'Please enter the business number', 'bottom');
-            setLoading(false);
-            return;
-        }
-        if (businessAddress == '') {
-            handleCreateToast('error', 'Please enter the business address', 'bottom');
-            setLoading(false);
-            return;
-        }
-        if (businessDescription == '') {
-            handleCreateToast('error', 'Please enter the business description', 'bottom');
-            setLoading(false);
-            return;
-        }
-        try {
-            createBusinessRequest(businessName, businessDescription, 
-                                  businessPhoneNumber, businessAddress, imageUriArray, user);
-            handleCreateToast('success', 'Reuqest sent. Pending approval', 'bottom');
-            nameRef.current.clear();
-            addressRef.current.clear();
-            numberRef.current.clear();
-            descriptionRef.current.clear();    
-            setImageUriArray([]); 
-            setLoading(false);
-            return;                               
-        }
-        catch (e) {
-            console.log(e);
-            handleCreateToast('error', 'Error creating request. Try again', 'bottom');
-            setLoading(false);
-            return;
-        }
-    };
-
-    const handleGetImages = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({ 
-                mediaType: 'photo',
-                selectionLimit: 12,
-                allowsMultipleSelection: true,
-                includeBase64: false,
-                maxHeight: 300,
-                maxWidth: 300,
-                quality: 1
-        });
-
-        if (!result.canceled) {
-            setImageUriArray(result.assets);
-        }
-    }
-
+    
     return (
         <TouchableWithoutFeedback onPress = {() => Keyboard.dismiss()}>
-            <ScrollView
-                contentContainerStyle = {styles.container}
+            <KeyboardAvoidingView
+                behavior = {Platform.OS === 'ios' ? 'padding' : 'height'}
+                style = {{flex: 1}}
+                keyboardVerticalOffset = '90'
             >
-                <Text style = {[styles.header, {color: colors.text}]}>Provide Business Details</Text>
-                <TextInput
-                    style = {[styles.inputBox, {borderColor: colors.text, color: colors.text}]}
-                    placeholder = 'Business Name'
-                    placeholderTextColor = {colors.text}
-                    onChangeText = {(text) => setBusinessName(text)}
-                    ref = {nameRef}
-                />
-
-                <TextInput
-                    style = {[styles.inputBox, {borderColor: colors.text, color: colors.text}]}
-                    placeholder = 'Business Phone Number'
-                    placeholderTextColor = {colors.text}
-                    onChangeText = {(text) => setBusinessPhoneNumber(text)}
-                    ref = {numberRef}
-                />
-                <TextInput
-                    style = {[styles.inputBox, {borderColor: colors.text, color: colors.text}]}
-                    placeholder = 'Business Address'
-                    placeholderTextColor = {colors.text}
-                    onChangeText = {(text) => setBusinessAddress(text)}
-                    ref = {addressRef}
-                />
-                <TextInput
-                    style = {[styles.descriptionBox, {borderColor: colors.text, color: colors.text}]}
-                    placeholder = 'Business Description'
-                    placeholderTextColor = {colors.text}
-                    onChangeText = {(text) => setBusinessDescription(text)}
-                    multiline
-                    numberOfLines = {5}
-                    maxLength = {160}
-                    ref = {descriptionRef}
-                />
-
-                <TouchableOpacity 
-                    style = {[styles.photoButton, {color: colors.text, borderColor: colors.text}]}
-                    onPress = {() => handleGetImages()}
+                <ScrollView
+                    contentContainerStyle = {styles.container}
                 >
-                    <Text style = {{color: colors.text}}>Select Photos</Text>
-                </TouchableOpacity>
-                <Text style = {{fontSize: 11, marginBottom: 4, color: colors.text}}>Limit of 12 photos</Text>
-                <View style = {[styles.photoContainer, {borderColor: colors.text}]}>
-                    <FlatList 
-                        horizontal
-                        alwaysBounceHorizontal
-                        data = {imageUriArray}
-                        keyExtractor = {(item) => item.uri}
-                        contentContainerStyle = {{alignItems: 'center', justifyContent: 'center', flex: 1 }}
-                        renderItem = {({item}) => {
-                            return (
-                                <Image 
-                                    source = {{ uri: item.uri}}
-                                    style = {{ width: 158, 
-                                               height: 158, 
-                                               margin: 1, 
-                                               borderRadius: 8
-                                            }}
-                                /> 
-                            )
-                        }}
+                    <Text style = {[styles.header, {color: colors.text}]}>Provide Business Details</Text>
+
+                    <TextInput
+                        style = {[styles.inputBox, {borderColor: colors.text, color: colors.text}]}
+                        placeholder = 'Business Name'
+                        placeholderTextColor = 'gray'
+                        onChangeText = {(text) => setBusinessData((prevData) => ({
+                            ...prevData,
+                            businessName: text
+                        }))}
                     />
-                </View>
-                
-                <TouchableOpacity 
-                    style = {[styles.submitButton, {color: colors.text, borderColor: colors.text}]}
-                    onPress = {() => handleSubmitPage()}
-                >
-                    <Text style = {{color: colors.text}}>Submit</Text>
-                </TouchableOpacity>
-                { loading && <ActivityIndicator size = 'small' color = {colors.text} /> }
-                <Toast />
-            </ScrollView>
+
+                    <TextInput
+                        style = {[styles.inputBox, {borderColor: colors.text, color: colors.text}]}
+                        placeholder = 'Business Phone Number'
+                        placeholderTextColor = 'gray'
+                        onChangeText = {(text) => setBusinessData((prevData) => ({
+                            ...prevData,
+                            businessPhoneNumber: text
+                        }))}                    
+                    />
+
+                    <TextInput
+                        style = {[styles.inputBox, {borderColor: colors.text, color: colors.text}]}
+                        placeholder = 'Business Address'
+                        placeholderTextColor = 'gray'
+                        onChangeText = {(text) => setBusinessData((prevData) => ({
+                            ...prevData,
+                            businessAddress: text
+                        }))}                    
+                    />
+
+                    <TextInput
+                        style = {[styles.descriptionBox, {borderColor: colors.text, color: colors.text}]}
+                        placeholder = 'Business Description (160 characters)'
+                        placeholderTextColor = 'gray'
+                        onChangeText = {(text) => setBusinessData((prevData) => ({
+                            ...prevData,
+                            businessDescription: text
+                        }))}
+                        multiline
+                        numberOfLines = {5}
+                        maxLength = {160}
+                    />
+
+                    <TextInput
+                        style = {[styles.inputBox, {borderColor: colors.text, color: colors.text}]}
+                        placeholder = 'Website Link (Optional)'
+                        placeHolderTextColor = 'gray'
+                        onChangeText = {(text) => setBusinessData((prevData) => ({
+                            ...prevData,
+                            businessWebsite: text
+                        }))}                    
+                    />
+
+                    <TextInput
+                        style = {[styles.inputBox, {borderColor: colors.text, color: colors.text}]}
+                        placeholder = 'Instagram Link or Name (Optional)'
+                        placeHolderTextColor = 'gray'
+                        onChangeText = {(text) => setBusinessData((prevData) => ({
+                            ...prevData,
+                            instagram: text
+                        }))}                    
+                    />
+
+                    <TextInput
+                        style = {[styles.inputBox, {borderColor: colors.text, color: colors.text}]}
+                        placeholder = 'Facebook Link or Name (Optional)'
+                        placeHolderTextColor = 'gray'
+                        onChangeText = {(text) => setBusinessData((prevData) => ({
+                            ...prevData,
+                            facebook: text
+                        }))}                    
+                    />
+
+                    <TextInput
+                        style = {[styles.inputBox, 
+                                 {borderColor: colors.text, 
+                                  color: colors.text, 
+                                }]}
+                        placeholder = 'Yelp Link or Name (Optional)'
+                        placeHolderTextColor = 'gray'
+                        onChangeText = {(text) => setBusinessData((prevData) => ({
+                            ...prevData,
+                            yelp: text
+                        }))}                    
+                    />
+                </ScrollView>
+            </KeyboardAvoidingView>
         </TouchableWithoutFeedback>
+
     )
 }
 
 const styles = StyleSheet.create({
     header: {
         fontSize: 20,
-        margin: 8
+        margin: 8,
+        fontWeight: '500'
     },
     container: {
         alignItems: 'center',
@@ -188,36 +138,4 @@ const styles = StyleSheet.create({
         padding: 10,
         margin: 8,
     },
-    submitButton: {
-        padding: 10,
-        borderWidth: 1,
-        borderRadius: 10,
-        margin: 8,
-        height: 50,
-        width: 120,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    photoButton: {
-        padding: 10,
-        borderWidth: 1,
-        borderRadius: 10,
-        margin: 8,
-        marginBottom: 3,
-        height: 50,
-        width: 180,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    photoContainer: {
-        borderWidth: 1,
-        height: 160,
-        width: 310,
-        borderRadius: 8,
-        marginBottom: 10,
-        padding: 4,
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingHorizontal: 3,
-    }
 })

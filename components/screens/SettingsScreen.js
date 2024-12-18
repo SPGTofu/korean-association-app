@@ -35,21 +35,6 @@ export default function SettingsScreen({ navigation }) {
                         }}
                 /> 
             </View>
-            <View style = {styles.viewBlock}>
-                <Text style = {{color: colors.text, fontSize: 20}}>Language</Text>
-                <View style = {styles.viewBlock}>
-                    <LanguageButton 
-                        title = 'English'
-                        language = {language}
-                        changeLanguage = {changeLanguage}
-                    />
-                    <LanguageButton 
-                        title = 'Korean'
-                        language = {language}
-                        changeLanguage = {changeLanguage}
-                    />
-                </View>
-            </View>
             {user ? (<>
                         <AccountData navigation = {navigation} />
                         <View style = {styles.signWrap}>
@@ -97,3 +82,20 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     }
 })
+
+{/* Bring back once language is figured out.
+<View style = {styles.viewBlock}>
+    <Text style = {{color: colors.text, fontSize: 20}}>Language</Text>
+    <View style = {styles.viewBlock}>
+        <LanguageButton 
+            title = 'English'
+            language = {language}
+            changeLanguage = {changeLanguage}
+        />
+        <LanguageButton 
+            title = 'Korean'
+            language = {language}
+            changeLanguage = {changeLanguage}
+        />
+    </View>
+</View> */}

@@ -21,7 +21,8 @@ export default function ReviewPage({navigation}) {
     }, []);
 
     useEffect(() => { 
-        console.log(arrayOfPendingBusinesses);
+        // testing purposes
+        // console.log(arrayOfPendingBusinesses);
     }, [arrayOfPendingBusinesses])
 
     if (loading) {
@@ -37,19 +38,19 @@ export default function ReviewPage({navigation}) {
     return (
         <ScrollView>
             {arrayOfPendingBusinesses.length > 0? (
-                arrayOfPendingBusinesses.map((business) => (
-                    <ReviewPageCard 
-                        key = {business.name}
-                        data= {business}
-                        navigation = {navigation}
-                    />
-                ))) : 
-                (<Text style = {{fontSize: 18, 
-                                 fontWeight: 'bold', 
-                                 textAlign: 'center',
-                                 margin: 10,
-                                 colors: colors.text
-                                }}>
+                <>
+                    <Text style = {[styles.textContainer, {color: colors.text}]}>
+                        Pending Businesses:
+                    </Text>
+                    {arrayOfPendingBusinesses.map((business) => (
+                        <ReviewPageCard 
+                            key = {business.name}
+                            data = {business}
+                            navigation = {navigation}
+                        />
+                    ))}
+                </>) : 
+                (<Text style = {[styles.textContainer, {color: colors.text}]}>
                             No New Pages to Review
                 </Text>)
             }
@@ -66,5 +67,12 @@ const styles = StyleSheet.create({
     },
     loader: {
         size: 'large'
+    },
+    textContainer: {
+        fontSize: 18, 
+        fontWeight: 'bold', 
+        textAlign: 'center',
+        margin: 10,
+        marginBottom: 0
     }
 });

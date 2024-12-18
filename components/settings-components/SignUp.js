@@ -17,12 +17,20 @@ export default function SignUp({ navigation }) {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const [userName, setUserName] = useState('');
+    const userNameRef = useRef(null);
 
     //handles sign up button pressed
     const handleSignUp = async () => {
         try {
             Keyboard.dismiss();
             setLoading(true);
+            //handles issue when no name is entered
+            if (userName == '') {
+                handleCreateToast('error', "Please enter an email", "bottom");
+                setLoading(false);
+                return;
+            }
             //handles issue when no email is entered
             if (email == '') {
                 handleCreateToast('error', 'Please enter an email', 'bottom');
@@ -47,7 +55,7 @@ export default function SignUp({ navigation }) {
                 return;
             }
             //creates account with email and password
-            await doCreateUserWithEmailAndPassword(email, password);
+            await doCreateUserWithEmailAndPassword(email, password, userName);
             setLoading(false);
             //resets sign up inputs
             confirmPasswordRef.current.clear();
@@ -80,24 +88,34 @@ export default function SignUp({ navigation }) {
         <TouchableWithoutFeedback onPress = {() => Keyboard.dismiss()}>
             <View style = {styles.container}>
                 <TextInput 
+                    placeholder = 'First and Last Name'
+                    ref = {userNameRef}
+                    placeholderTextColor = 'gray'
+                    style = {[styles.inputBox, {borderColor: colors.text, color: colors.text}]}
+                    onChangeText = {(text) => setUserName(text)}
+                />
+
+                <TextInput 
                     placeholder = 'Email'
                     ref = {emailRef}
-                    placeholderTextColor = {colors.text}
+                    placeholderTextColor = 'gray'
                     style = {[styles.inputBox, {borderColor: colors.text, color: colors.text}]}
                     onChangeText = {(text) => setEmail(text)}
                 />
+
                 <TextInput 
                     placeholder = 'Password'
                     ref = {passwordRef}
-                    placeholderTextColor = {colors.text}
+                    placeholderTextColor = 'gray'
                     style = {[styles.inputBox, {borderColor: colors.text, color: colors.text}]}
                     secureTextEntry = {true}
                     onChangeText = {(text) => handlePasswordChange(text)}
                 />
+
                 <TextInput 
                     placeholder = 'Confirm Password'
                     ref = {confirmPasswordRef}
-                    placeholderTextColor = {colors.text}
+                    placeholderTextColor = 'gray'
                     style = {[styles.inputBox, {borderColor: colors.text, color: colors.text}]}
                     secureTextEntry = {true}
                     onChangeText = {(text) => handleConfirmPasswordChange(text)}
@@ -122,7 +140,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     inputBox: {
-        height: 60,
+        height: 50,
         width: 300,
         borderWidth: 1,
         borderColor: 'white',

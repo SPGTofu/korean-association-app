@@ -45,10 +45,10 @@ export default function SubmitHoursScreen() {
                             dateIndex = {6}
                         />
                     </View>
-                    <Text style = {styles.descriptionText}>Anything else we should know?</Text>
+                    <Text style = {[styles.descriptionText, {color: colors.text}]}>Anything else we should know?</Text>
                     <TextInput 
-                        style = {styles.textInput}
-                        placeholder = "optional (120 characters)"
+                        style = {[styles.textInput, {color: colors.text, borderColor: colors.text}]}
+                        placeholder = "Optional (120 characters)"
                         onChangeText = {(text) => setBusinessData((prevState) => ({
                             ...prevState,
                             hoursDescription: text
@@ -56,7 +56,7 @@ export default function SubmitHoursScreen() {
                         multiline
                         numberOfLines = {4}
                         maxLength = {120}
-
+                        placeholderTextColor = 'gray'
                     />
                 </ScrollView>
             </KeyboardAvoidingView>
@@ -79,7 +79,8 @@ const styles = StyleSheet.create({
     daysContainer: {
         width: '100%',
         flexDirection: 'column',
-        marginRight: 1
+        marginRight: 1,
+        margin: 4
     },
     descriptionText: {
         margin: 6,

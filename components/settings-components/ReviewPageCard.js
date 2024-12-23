@@ -1,8 +1,7 @@
-import { NavigationContext, useTheme } from "@react-navigation/native";
 import React, { useContext, useEffect, useState } from "react"
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import noImageIcon from "../../assets/no-image-icon.jpg"
-import { getImageFromStorage } from "../storagecalls";
+import { getPendingImageFromStorage } from "../storagecalls";
+import { useTheme } from "@react-navigation/native";
 
 export default function ReviewPageCard(props) {
     const { colors } = useTheme();
@@ -13,7 +12,7 @@ export default function ReviewPageCard(props) {
         const fetchFirstImage = async () => {
             if (data?.photos?.[0]) {
                 try {
-                    const firstImageUrl = await getImageFromStorage(data.name, data.photos[0]);
+                    const firstImageUrl = await getPendingImageFromStorage(data.name, data.photos[0]);
                     setFirstImage(firstImageUrl);
                 } catch (error) {
                     console.error("Error fetching first image: ", error);
@@ -28,7 +27,7 @@ export default function ReviewPageCard(props) {
         <TouchableOpacity onPress = {() => navigation.navigate('PendingBusinessPage', { businessData: data })}>
             <View  style = {[{borderColor: colors.text}, styles.cardContainer]}>
                 <Image
-                    source = {firstImage? { uri: firstImage }: noImageIcon}
+                    source = {{ uri: firstImage }}
                     style = {styles.imageContainer}
                 />
                 <View style = {styles.textContainer}>

@@ -11,9 +11,9 @@ export default function Saved() {
 
 const styles = StyleSheet.create({
     title: {
-        fontSize: 36,
+        fontSize: 28,
         textAlign: 'center',
         margin: 10,
-        fontWeight: '600'
+        fontWeight: '500'
     }
 });

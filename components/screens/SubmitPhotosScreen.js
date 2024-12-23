@@ -60,12 +60,13 @@ export default function SubmitPhotosScreen() {
                         </Pressable>
                     )
                 }}
-                onDragEnd = {({data}) => setBusinessData((prevState) => ({
+                onDragEnd = {({data}) => {
+                    const updatedData = [...data];
+                    setBusinessData((prevState) => ({
                     ...prevState,
-                    imageUriArray: data
-                }))}
+                    imageUriArray: updatedData
+                }))}}
             />
-            
         </View>
     )
 }
@@ -79,7 +80,7 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 14,
-        marginBottom: 4
+        marginBottom: 8
     },
     container: {
         alignItems: 'center',

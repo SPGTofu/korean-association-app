@@ -56,18 +56,18 @@ export default function WeekdayHours({ day, dateIndex }) {
             </View>
             {businessData.hours[dateIndex].isOpen ? (
                 <View style = {styles.dayHoursContainer} > 
-                    <Text style = {styles.hoursText}>
+                    <Text style = {[styles.hoursText, {color: colors.text}]}>
                         From: 
                     </Text>
                     <TextInput 
-                        style = {styles.textInput}
+                        style = {[styles.textInput, {color: colors.text, borderColor: colors.text}]}
                         onChangeText = {(text) => updateOpenTimeOfDay(text)}
                     />
-                    <Text style = {styles.hoursText}>
+                    <Text style = {[styles.hoursText, {color: colors.text}]}>
                         To: 
                     </Text>
                     <TextInput 
-                        style = {styles.textInput} 
+                        style = {[styles.textInput, {color: colors.text, borderColor: colors.text}]} 
                         onChangeText = {(text) => updateCloseTimeOfDay(text)}
                     />
                 </View>

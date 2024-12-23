@@ -1,6 +1,6 @@
 import { FIREBASE_DB, FIREBASE_STORAGE } from "../FirebaseConfig";
-import { addDoc, collection, doc, getDoc, getDocs, onSnapshot, query, where } from "firebase/firestore";
-import { uploadImageToStorage } from "./storagecalls";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query, where } from "firebase/firestore";
+import { movePendingImageToPublishedImage, uploadPendingImageToStorage, uploadingPublishedImageToStorage } from "./storagecalls";
 import { getBlob, ref } from "firebase/storage";
 
 /* create a document with the business' 
@@ -70,7 +70,7 @@ export const createBusinessRequest = async (name,
             const imageFilePath = name.replace(/\s/g, '');
             const imageNameString = imageFilePath + `${i}`;
             try {
-                await uploadImageToStorage(imageFilePath, imageNameString, photosArray[i].uri);
+                await uploadPendingImageToStorage(imageFilePath, imageNameString, photosArray[i].uri);
             } catch(error) {
                 return error;
             }
@@ -109,8 +109,7 @@ export const checkIfUserIsAdmin = async (user) => {
         const userDoc = await getDoc(userDocRef);
         if (userDoc.exists()) {
             return userDoc.data().roles.includes("admin");
-        }
-        else {
+        } else {
             console.error('userDoc does not exist');
             return false;
         }
@@ -151,8 +150,9 @@ export const subscribeToPendingBusinesses = (setArrayOfPendingBusinesses) => {
                         businessWebsiteInfo: doc.data().businessWebsiteInfo,
                         facebookInfo: doc.data().facebookInfo,
                         instagramInfo: doc.data().instagramInfo,
-                        yelpInfo: doc.data().yelpInfo
-
+                        yelpInfo: doc.data().yelpInfo,
+                        hours: doc.data().hours,
+                        hoursDescription: doc.data().hoursDescription
                     });
                 });
                 setArrayOfPendingBusinesses(tempArrayOfPendingBusinesses);
@@ -163,4 +163,51 @@ export const subscribeToPendingBusinesses = (setArrayOfPendingBusinesses) => {
         console.error('error returning query of business requests: ', error);
         return[];
      }
+}
+
+// sends business into database
+export const sendBusinessDataToDatabase = async (businessData) => {
+    try {
+        // add doc to database
+        const databaseCollectionRef = collection(FIREBASE_DB, "database");
+        await addDoc(databaseCollectionRef, {
+            name: businessData.name,
+            tags: businessData.tags,
+            phoneNumber: businessData.phoneNumber,
+            businessWebsiteInfo: businessData.businessWebsiteInfo,
+            instagramInfo: businessData.instagramInfo,
+            facebookInfo: businessData.facebookInfo,
+            yelpInfo: businessData.yelpInfo,
+            description: businessData.description,
+            hours: businessData.hours,
+            address: businessData.address,
+            publisher: businessData.publisher,
+            photos: businessData.photoNames
+        });
+        console.log('doc addition successful');
+
+        // remove doc from pending businesses
+        const businessRequestsCollectionRef = collection(FIREBASE_DB, "businessRequests");
+        const docQuery = query(businessRequestsCollectionRef, where("name", "==", businessData.name));
+        const querySnapshot = await getDocs(docQuery);
+        if (querySnapshot.empty || querySnapshot.docs.length > 1) {
+            console.error("No documents found");
+            return;
+        }
+        const docName = querySnapshot.docs[0];
+        const deletingDoc = doc(FIREBASE_DB, "businessRequests", docName.id);
+        console.log(deletingDoc);
+        await deleteDoc(deletingDoc);
+        console.log('doc deletion successful');
+        
+        // add images to published images and removes from pending images
+        for (let i = 0; i < businessData.photos.length; i++) {
+            const imageFilePath = businessData.name.replace(/\s/g, '');
+            const imageNameString = imageFilePath + `${i}`;
+            await movePendingImageToPublishedImage(imageFilePath, imageNameString);
+        }
+    } catch(error) {
+        console.error(error);
+        return null;
+    }
 }

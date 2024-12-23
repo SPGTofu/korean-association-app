@@ -65,7 +65,7 @@ export default function SubmitPage() {
                     <TextInput
                         style = {[styles.inputBox, {borderColor: colors.text, color: colors.text}]}
                         placeholder = 'Website Link (Optional)'
-                        placeHolderTextColor = 'gray'
+                        placeholderTextColor = 'gray'
                         onChangeText = {(text) => setBusinessData((prevData) => ({
                             ...prevData,
                             businessWebsite: text
@@ -75,7 +75,7 @@ export default function SubmitPage() {
                     <TextInput
                         style = {[styles.inputBox, {borderColor: colors.text, color: colors.text}]}
                         placeholder = 'Instagram Link or Name (Optional)'
-                        placeHolderTextColor = 'gray'
+                        placeholderTextColor = 'gray'
                         onChangeText = {(text) => setBusinessData((prevData) => ({
                             ...prevData,
                             instagram: text
@@ -85,7 +85,7 @@ export default function SubmitPage() {
                     <TextInput
                         style = {[styles.inputBox, {borderColor: colors.text, color: colors.text}]}
                         placeholder = 'Facebook Link or Name (Optional)'
-                        placeHolderTextColor = 'gray'
+                        placeholderTextColor = 'gray'
                         onChangeText = {(text) => setBusinessData((prevData) => ({
                             ...prevData,
                             facebook: text
@@ -98,7 +98,7 @@ export default function SubmitPage() {
                                   color: colors.text, 
                                 }]}
                         placeholder = 'Yelp Link or Name (Optional)'
-                        placeHolderTextColor = 'gray'
+                        placeholderTextColor = 'gray'
                         onChangeText = {(text) => setBusinessData((prevData) => ({
                             ...prevData,
                             yelp: text

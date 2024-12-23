@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet, Touchable } from 'react-native';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../contexts/UserContext';
 import { useTheme } from '@react-navigation/native';
 import { checkIfUserIsAdmin } from '../dbcalls';
@@ -7,7 +7,16 @@ import { checkIfUserIsAdmin } from '../dbcalls';
 export default function AccountData({ navigation }) {
     const { user } = useContext(UserContext);
     const { colors } = useTheme();
-    const isAdmin = checkIfUserIsAdmin(user);
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    useEffect(()=> {
+        const fetchAdminStatus = async () => {
+            setIsAdmin(await checkIfUserIsAdmin(user));
+        };
+        console.log('useEffect in AccountData Active');
+        fetchAdminStatus();
+    }, [user])
+
     return (
         <View style = {styles.container}>
             <View style = {[{borderColor: colors.text, borderTopWidth: 1}, styles.button]}>
@@ -25,9 +34,9 @@ export default function AccountData({ navigation }) {
                     <Text style = {[{color: colors.text}, styles.text]}>Submit a New Business</Text>
                 </TouchableOpacity>
             </View>
-            {isAdmin ? (<>
+            {isAdmin == true ? (<>
                             <View style = {[{borderBottomWidth: 1, borderBottomColor: colors.text}, styles.button]}>
-                                <TouchableOpacity onPress = {() => navigation.navigate('ReviewPage')}>
+                                <TouchableOpacity onPress = {() => navigation.navigate('ReviewBusinessStack')}>
                                     <Text style = {[{color: colors.text}, styles.text]}>Pending Businesses</Text>
                                 </TouchableOpacity>
                             </View>

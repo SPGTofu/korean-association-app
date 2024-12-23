@@ -11,6 +11,7 @@ import SubmitPageStackScreen from "./SubmitPageStackScreen";
 import Toast from "react-native-toast-message";
 import { handleCreateToast } from "../settings-components/Toast";
 import { SettingStackContext } from "../contexts/SettingStackContext"
+import ReviewBusinessStackScreen from "./ReviewBusinessStackScreen";
 
 const SettingsStack = createStackNavigator();
 
@@ -60,14 +61,9 @@ export default function SettingStackScreen() {
                         options={{title: 'Submit a Page', headerShown: false}}
                     />
                     <SettingsStack.Screen 
-                        name = "ReviewPage"
-                        component = {ReviewPage} 
-                        options={{title: 'Review Pages'}}
-                    />
-                    <SettingsStack.Screen 
-                        name = "PendingBusinessPage" 
-                        component = {PendingBusinessPage} 
-                        options={{title: 'Review Pages'}}
+                        name = "ReviewBusinessStack"
+                        component = {ReviewBusinessStackScreen}
+                        options = {{title: 'Review Page', headerShown: false}}
                     />
                 </SettingsStack.Navigator>
                 <Toast />

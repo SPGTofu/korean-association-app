@@ -41,6 +41,7 @@
     "react-native-screens": "~4.1.0",
     "react-native-toast-message": "^2.2.1",
     "react-native-vector-icons": "^10.2.0",
+    "react-tag-input": "^6.10.3",
     "webidl-conversions": "^7.0.0"
   },
   "devDependencies": {

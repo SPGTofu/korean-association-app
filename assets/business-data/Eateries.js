@@ -1,9 +1,15 @@
 export const Eateries = [
     {
         name: 'Ariake Sushi & Robata',
-        description: 'Japanese Cuisine',
-        contact: '417-501-1675',
-        address: '1110 E Battlefield Rd, Springfield, MO 65807'
+        description: 'Ariake, meaning “Daybreak” in Japanese, redefines dining with a fusion of tradition and innovation. Savor fresh sushi, curated tasting menus, and legendary A5 wagyu beef in an elegant ambiance. Join us for a culinary experience that celebrates the refined essence of flavor and quality.',
+        phoneNumber: '417-501-1675',
+        businessWebsiteInfo: "https://www.ariakesushirobata.com/",
+        instagramInfo: 'https://www.instagram.com/ariake_springfield/',
+        yelpInfo: 'https://www.yelp.com/biz/ariake-sushi-and-robata-springfield',
+        facebookInfo: 'https://www.facebook.com/@arikake.spfd/',
+        photos: [],
+        tags: ["Sushi", "Seafood", "Bar"],
+        address: '1110 E Battlefield Rd, Springfield, MO 65807',
     },
 
     {

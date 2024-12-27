@@ -1,15 +1,14 @@
 export const Markets = [
     {
-        name: 'Asia Food & Gift Market',
-        description: 'Asian Grocery',
-        contact: '417-883-9272',
-        address: '1314 S Glenstone Ave, Springfield, MO 65804'
-    },
-
-    {
         name: 'Seoul Oriental Market',
-        description: 'Asian Grocery',
-        contact: '417-881-2311',
+        description: 'A small Korean grocery store offering a great selection of fresh produce and a variety of Asian pantry staples. Perfect for those seeking authentic ingredients to create traditional dishes at home.',
+        phoneNumber: '417-881-2311',
+        businessWebsiteInfo: '',
+        facebookInfo: 'https://www.facebook.com/seoulorientalmarket/',
+        yelpInfo: 'https://www.yelp.com/biz/seoul-oriental-market-springfield',
+        photos: [],
+        tags: ['Asian', 'Grocery', 'Pantry'],
+        hours: [{isOpen: true, openTime: "10:00AM", closeTime: "8:30PM"}, {isOpen: true, openTime: "10:00AM", closeTime: "8:30PM"}, {isOpen: true, openTime: "10:00AM", closeTime: "8:30PM"}, {isOpen: true, openTime: "10:00AM", closeTime: "8:30PM"}, {isOpen: true, openTime: "10:00AM", closeTime: "8:30PM"}, {isOpen: true, openTime: "10:00AM", closeTime: "8:30PM"}, {isOpen: true, openTime: "12:00AM", closeTime: "8:30PM"}],
         address: '3165 S Campbell Ave, Springfield, MO 65807'
     },
 ]

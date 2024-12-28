@@ -10,7 +10,7 @@ import AccountData from '../settings-components/AccountData';
 import { handleCreateToast } from '../settings-components/Toast';
 
 export default function SettingsScreen({ navigation }) {
-    const {theme, setTheme} = useContext(ThemeContext);
+    const {theme, handleSetTheme} = useContext(ThemeContext);
     const { colors } = useTheme();
     const [language, setLanguage] = useState('english');
     const { user, setUser } = useContext(UserContext);
@@ -25,13 +25,14 @@ export default function SettingsScreen({ navigation }) {
         }
         handleCreateToast('success', 'Signed Out', 'bottom');
     }
+    
     return (
         <View style = {styles.container}>
             <View style = {styles.viewBlock}>
                 <Text style = {{color: colors.text, fontSize: 20}}>Dark Theme</Text>
                 <Switch value = {theme == 'Light' ? false : true}
                         onChange = {() => {
-                            setTheme(theme == 'Light' ? 'Dark' : 'Light');
+                            handleSetTheme();
                         }}
                 /> 
             </View>

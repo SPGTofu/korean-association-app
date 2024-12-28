@@ -34,6 +34,11 @@ export default function AccountData({ navigation }) {
                     <Text style = {[{color: colors.text}, styles.text]}>Submit a New Business</Text>
                 </TouchableOpacity>
             </View>
+            <View style = {[{borderBottomWidth: 1, borderBottomColor: colors.text}, styles.button]}>
+                <TouchableOpacity onPress = {() => navigation.navigate('SubmitBusinessEdit', {business: false})}>
+                    <Text style = {[{color: colors.text}, styles.text]}>Write a Business Edit</Text>
+                </TouchableOpacity>
+            </View>
             {isAdmin == true ? (<>
                             <View style = {[{borderBottomWidth: 1, borderBottomColor: colors.text}, styles.button]}>
                                 <TouchableOpacity onPress = {() => navigation.navigate('ReviewBusinessStack')}>

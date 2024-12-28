@@ -9,7 +9,6 @@ export default function OpenButton(props) {
         index,
         day
     } = props;
-    const [isOpen, setIsOpen] = useState(defaultValue || false);
     const { colors } = useTheme();
 
     // used to map the index of the day to the actual day
@@ -21,20 +20,24 @@ export default function OpenButton(props) {
             <View style = {{flexDirection: 'row', margin: 4}}> 
                 <Text style = {[styles.timeTitle, {color: colors.text}]}>{days[index]}</Text>
                 <TouchableOpacity
-                    style = {[styles.container, {backgroundColor: (isOpen ? '#6fc276' : '#EF5A6F')}]}
-                    onPress = {() => setIsOpen((prevOpen) => !prevOpen)}
+                    style = {[styles.container, {backgroundColor: (day.isOpen ? '#6fc276' : '#EF5A6F')}]}
+                    onPress = {() => setPublishingHours((prevState) => {
+                        const newHours = [...prevState];
+                        newHours[index] = {...newHours[index], isOpen: !newHours[index].isOpen}
+                        return newHours;
+                    })}
                 >
-                    {isOpen ? (<Text style = {styles.buttonText}>Open</Text>) 
+                    {day.isOpen ? (<Text style = {styles.buttonText}>Open</Text>) 
                         : <Text style = {styles.buttonText} >Closed</Text>}
                 </TouchableOpacity>
             </View>
             <View style = {styles.timeWrapper}>
-                <Text style = {[styles.timeText, {color: (isOpen ? colors.text : offColor)}]}>From: </Text>
+                <Text style = {[styles.timeText, {color: (day.isOpen ? colors.text : offColor)}]}>From: </Text>
                 <TextInput 
-                    editable = {isOpen}
+                    editable = {day.isOpen}
                     style = {[styles.timeInput, 
-                             {borderColor: (isOpen ? colors.text : offColor)},
-                             {color: (isOpen ? colors.text : offColor)}
+                             {borderColor: (day.isOpen ? colors.text : offColor)},
+                             {color: (day.isOpen ? colors.text : offColor)}
                     ]}
                     value = {day.openTime}
                     onChangeText = {(text) => {
@@ -45,12 +48,12 @@ export default function OpenButton(props) {
                         })
                     }}
                 />
-                <Text style = {[styles.timeText, {color: (isOpen ? colors.text : offColor)}]}>To: </Text>
+                <Text style = {[styles.timeText, {color: (day.isOpen ? colors.text : offColor)}]}>To: </Text>
                 <TextInput 
-                    editable = {isOpen}
+                    editable = {day.isOpen}
                     style = {[styles.timeInput, 
-                             {borderColor: (isOpen ? colors.text : offColor)},
-                             {color: (isOpen ? colors.text : offColor)}
+                             {borderColor: (day.isOpen ? colors.text : offColor)},
+                             {color: (day.isOpen ? colors.text : offColor)}
                     ]}                    value = {day.closeTime}
                     onChangeText = {(text) => {
                         setPublishingHours((prevState) => {

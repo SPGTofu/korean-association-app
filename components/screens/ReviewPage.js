@@ -44,7 +44,7 @@ export default function ReviewPage({navigation}) {
                     </Text>
                     {arrayOfPendingBusinesses.map((business) => (
                         <ReviewPageCard 
-                            key = {business.name}
+                            key = {business.docID}
                             data = {business}
                             navigation = {navigation}
                         />

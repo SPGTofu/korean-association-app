@@ -1,6 +1,6 @@
 import { Text, View } from "react-native";
 
-export default function CopyrightText(textColor, size) {
+export default function CopyrightText({ size }) {
     const currDate = new Date();
     const currYear = currDate.getFullYear();
 
@@ -8,7 +8,7 @@ export default function CopyrightText(textColor, size) {
         <View style = {{justifyContent: 'center', alignItems: 'center'}}> 
             <Text
                 style = {{
-                    color: textColor,
+                    color: 'darkgray',
                     fontSize: size,
                     margin: 12
                 }}

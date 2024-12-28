@@ -1,16 +1,18 @@
 import { useTheme } from "@react-navigation/native";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Dimensions, Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { SubmitPageStackScreenContext } from "../contexts/SubmitPageStackScreenContext";
+import ImageButton from "../settings-components/ImageButton";
 
 const screenWidth = Dimensions.get("window").width;
 
 export default function SubmitPhotosScreen() {
     const { colors } = useTheme();
     const { businessData, setBusinessData } = useContext(SubmitPageStackScreenContext);
-    
+    const [selectedImage, setSelectedImage] = useState(-1);
+
     // gets images
     const handleGetImages = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({ 
@@ -31,6 +33,27 @@ export default function SubmitPhotosScreen() {
         }
     }
     
+    // remove image when button is clicked
+    const handleRemoveImage = async (uri) => {
+        console.log('removing');
+        setBusinessData((prevState) => ({
+            ...prevState,
+            imageUriArray: prevState.imageUriArray.filter((item) => item.uri != uri)
+        }))
+    };
+
+    // cancels image selection
+    const handleCancelPressed = () => {
+        console.log ('pressing');
+        setSelectedImage(null);
+    }
+
+    // selects current image
+    const handleImagePressed = (uri) => {
+        setSelectedImage(uri);
+    }
+    
+
     return (
         <View style = {styles.container}>
             <TouchableOpacity
@@ -49,22 +72,42 @@ export default function SubmitPhotosScreen() {
                 data = {businessData.imageUriArray}
                 keyExtractor = {(item) => item.uri}
                 contentContainerStyle = {styles.photosArray}
-                renderItem = {({item, drag, isActive}) => {
+                renderItem = {({item, drag, isActive, index}) => {
                     return (
-                        <Pressable onLongPress = {drag}>
+                        <Pressable
+                            onPress = {() => handleImagePressed(item.uri)}
+                            onLongPress = {drag}
+                            style = {styles.photoContainer}
+                        >
                             <Image
                                 source = {{uri: item.uri}}
-                                style = {[styles.photo, (isActive && styles.photoActive)]}
+                                style = {
+                                    [styles.photo, 
+                                    ((isActive || selectedImage == item.uri) && styles.photoActive)
+                                ]}
                                 resizeMode = 'cover'
                             /> 
+                            {selectedImage == item.uri && 
+                                <>
+                                    <ImageButton 
+                                        title = 'Remove'
+                                        position = 'top'
+                                        onPress = {() => handleRemoveImage(item.uri)}
+                                    />
+                                    <ImageButton 
+                                        title = 'Cancel'
+                                        onPress = {() => handleCancelPressed()}
+                                        position = 'bottom'
+                                    />
+                                </>
+                            }
                         </Pressable>
                     )
                 }}
                 onDragEnd = {({data}) => {
-                    const updatedData = [...data];
                     setBusinessData((prevState) => ({
                     ...prevState,
-                    imageUriArray: updatedData
+                    imageUriArray: [...data]
                 }))}}
             />
         </View>
@@ -86,7 +129,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-start',
         width: '100%',
-        flex: 1,
+        height: '84%'
     },
     photoButton: {
         padding: 4,
@@ -110,10 +153,15 @@ const styles = StyleSheet.create({
         shadowOffset: 1
     },
     photo: {
+        width: '100%', 
+        height: '100%', 
+        borderRadius: 8,
+        borderWidth: 1,
+        position: 'absolute'
+    },
+    photoContainer: {
         width: screenWidth * .98, 
         height: 240, 
         margin: 1, 
-        borderRadius: 8,
-        borderWidth: 1,
     }
 })

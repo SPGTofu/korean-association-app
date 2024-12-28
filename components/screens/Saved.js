@@ -1,19 +1,102 @@
-import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react';``
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { getSavedBusinessesOfUser } from '../dbcalls';
+import { UserContext } from "../contexts/UserContext";
+import SavedBusinessImage from '../settings-components/SavedBusinessImage';
+import { useTheme } from '@react-navigation/native';
 
-export default function Saved() {
+export default function Saved({ navigation }) {
+    const { user } = useContext(UserContext);
+    const [userSavedList, setUserSavedList] = useState([]);
+    const { colors } = useTheme();
+
+    useEffect(() => {
+        const fetchSavedBusiness = async () => {
+            const savedBusinesses = await getSavedBusinessesOfUser(user);
+            setUserSavedList(savedBusinesses || []);
+        };
+
+        fetchSavedBusiness();
+    }, [user]);
+
+    const navigateToBusinessInHomeTab = (business) => {
+        navigation.navigate('Home', {
+            screen: 'InformationScreen',
+            params: {businessData: business}
+        });
+    }
+
     return (
-        <View>
+        <ScrollView>
             <Text style = {styles.title}>Saved Businesses</Text>
-        </View>
+            {userSavedList?.length > 0 ? 
+                userSavedList.map((business, index) => {
+                    if (business == null) {
+                        return null;
+                    }
+
+                    return (          
+                        <TouchableOpacity 
+                            key = {index}
+                            style = {styles.container}
+                            onPress = {() => navigateToBusinessInHomeTab(business)}
+                        > 
+                            <View style = {styles.view}>
+                                <SavedBusinessImage 
+                                    business = {business}
+                                    style = {styles.image}
+                                />
+                                <Text style = {[styles.text, {color: colors.text}]}>
+                                    {business?.name || "Business Unavailable"}
+                                </Text>
+                            </View>
+                        </TouchableOpacity>
+                    )
+                })
+
+                : <Text style = {styles.noBusinessText}>
+                    You have no businesses saved. Try saving one!
+                  </Text>
+            }
+        </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
     title: {
-        fontSize: 28,
+        fontSize: 26,
         textAlign: 'center',
         margin: 10,
-        fontWeight: '500'
-    }
+        fontWeight: '600'
+    },
+    noBusinessText: {
+        fontsize: 20,
+        textAlign: 'center',
+        margin: 4,
+        fontWeight: '400'
+    },
+    container: {
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    view: {
+        borderWidth: 1,
+        alignItems: 'center',
+        justifyContent: 'top',
+        width: '98%',
+        height: 270,
+        borderRadius: 8,
+        backgroundColor: '#f4f4f4',
+    },
+    image: {
+        height: 240,
+        width: '100%',
+        backgroundColor: 'black',
+        resizeMode: 'cover'
+    },
+    text: {
+        fontSize: 20,
+        padding: 4,
+        fontWeight: 600,
+    },
 });

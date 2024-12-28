@@ -1,14 +1,15 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 
 export default function ImageButton(props) {
-    const { title, onPress } = props;
-
+    const { title, onPress, position } = props;
     return (
         <TouchableOpacity 
-            style = {styles.container}
+            style = {[styles.container, 
+                     {borderTopWidth: (position == 'bottom' ? 1 : 0)}
+                ]}
             onPress = {()=> onPress? onPress() : null}
         >
-            <Text>
+            <Text style = {styles.text}>
                 {title}
             </Text>
         </TouchableOpacity>
@@ -18,8 +19,15 @@ export default function ImageButton(props) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        borderWidth: 1,
-        height: '100%'
+        width: '100%',
+        height: '50%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'transparent',
+        position: 'relative',
+    },
+    text: {
+        fontSize: 18,
+        fontWeight: 500
     }
 });

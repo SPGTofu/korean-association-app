@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, FlatList, Image, ScrollView, Dimensions, Linking, Pressable, TouchableOpacity, LayoutAnimation } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import { handleCreateToast } from "../settings-components/Toast";
 import Toast from "react-native-toast-message";
@@ -20,19 +20,28 @@ import { ReviewBusinessStackScreenContext } from "../contexts/ReviewBusinessStac
 
 const screenWidth = Dimensions.get('window').width;
 
-export default function BusinessInfoScreen({ isSaved, businessData }) {
+export default function BusinessInfoScreen({ isSaved, businessData, isPreview}) {
     const { dark, colors } = useTheme();
     const [hoursTabOpen, setHoursTapOpen] = useState(false);
     const { handleSetPublishingbusinessData } = useContext(ReviewBusinessStackScreenContext);
 
-    // send info to stack for submission use
-    handleSetPublishingbusinessData(businessData);
+    useEffect(() => {
+        if (isPreview) {
+            // send info to stack for submission use
+            handleSetPublishingbusinessData(businessData);
+        }
+    }, [businessData]);
 
     // used to check if tags should be displayed
     let tagExists = true;
-    if (businessData.tags[0] == "" && businessData.tags[1] == "" && businessData.tags[2] == "" ) {
-        tagExists = false;
-    };
+    if (businessData.tags) {
+        if (businessData.tags[0] == "" 
+            && businessData.tags[1] == "" 
+            && businessData.tags[2] == "" 
+        ) {
+            tagExists = false;
+        };
+    }
 
     // opens phone app to call the business
     const handleNumberClicked = () => {
@@ -44,15 +53,26 @@ export default function BusinessInfoScreen({ isSaved, businessData }) {
     }
 
     // opens business website
-    const handleWebsiteClicked = () => {
-        let businessWebsite;
-        console.log(businessData.businessWebsiteInfo.substring(0,7));
-        if (businessData.businessWebsiteInfo.substring(0,8) === 'https://') {
-            businessWebsite = businessData.businessWebsiteInfo;
-        } else {
-            businessWebsite = 'https://' + businessData.businessWebsiteInfo;
+    const handleWebsiteClicked = (link, linkType) => {
+        // if link doesn't exist, then send error
+        if (link === "") {
+            Toast.show({
+                type: 'info', 
+                    text1: `${businessData.name}`, 
+                    text2: `does not have a ${linkType} connected yet.`, 
+                    position: 'bottom'
+            });
+            return;
         }
-        Linking.openURL(businessWebsite).catch((error) => {
+
+        let website;
+        console.log(link.substring(0,7));
+        if (link.substring(0,8) === 'https://') {
+            website = link;
+        } else {
+            website = 'https://' + link;
+        }
+        Linking.openURL(website).catch((error) => {
             console.error(error);
             handleCreateToast('error', 'Failed to load website', 'bottom');
         });
@@ -106,20 +126,18 @@ export default function BusinessInfoScreen({ isSaved, businessData }) {
                         </Pressable>
                     }
 
-                    {businessData.businessWebsiteInfo && 
-                        <Pressable
-                            style = {styles.imageAndTextContainer}
-                            onPress = {() => handleWebsiteClicked()}
-                        >
-                            <Image 
-                                source = {dark ? webLogoDark : webLogoLight}
-                                style = {styles.logo}
-                            />
-                            <Text style = {[styles.linkText, {color: colors.text}]}>
-                                Visit Website
-                            </Text>
-                        </Pressable>
-                    }
+                    <Pressable
+                        style = {styles.imageAndTextContainer}
+                        onPress = {() => handleWebsiteClicked(businessData.businessWebsiteInfo, 'business website')}
+                    >
+                        <Image 
+                            source = {dark ? webLogoDark : webLogoLight}
+                            style = {styles.logo}
+                        />
+                        <Text style = {[styles.linkText, {color: colors.text}]}>
+                            Visit Website
+                        </Text>
+                    </Pressable>
                     <Image 
                         source = {isSaved? bookmarkSaved 
                                     : (dark ? bookmarkDarkUnsaved : bookmarkLightUnsaved)
@@ -128,18 +146,24 @@ export default function BusinessInfoScreen({ isSaved, businessData }) {
                     />
                 </View>
                 <View style = {styles.flexBox2Wrapper}>
-                    <Image 
-                        source = {dark ? instagramLogoDark : instagramLogoLight}
-                        style = {styles.logoLarge}
-                    />
-                    <Image 
-                        source = {facebookLogo}
-                        style = {styles.logoLarge}
-                    />
-                    <Image 
-                        source = {yelpLogo}
-                        style = {styles.logoLarge}
-                    />
+                    <TouchableOpacity onPress = {() => handleWebsiteClicked(businessData.instagramInfo, 'Instagram')}>
+                        <Image 
+                            source = {dark ? instagramLogoDark : instagramLogoLight}
+                            style = {styles.logoLarge}
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress = {() => handleWebsiteClicked(businessData.facebookInfo, 'Facebook')}>
+                        <Image 
+                            source = {facebookLogo}
+                            style = {styles.logoLarge}
+                        />       
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress = {() => handleWebsiteClicked(businessData.yelpInfo, 'Yelp')}>
+                        <Image 
+                            source = {yelpLogo}
+                            style = {styles.logoLarge}
+                        />
+                    </TouchableOpacity>
                 </View>
             </View>
 
@@ -154,7 +178,7 @@ export default function BusinessInfoScreen({ isSaved, businessData }) {
             <View style = {styles.standardWrapper}>
                 <TouchableOpacity onPress = {() => setHoursTapOpen((prev) => !prev)}>
                     <View style = {[styles.standardWrapper, {flexDirection: 'row'}]}>
-                    <Text style = {styles.title}>
+                    <Text style = {[styles.title, {color: colors.text}]}>
                         Hours
                     </Text> 
                         {hoursTabOpen ?
@@ -177,7 +201,7 @@ export default function BusinessInfoScreen({ isSaved, businessData }) {
                     businessData.hours.map((hour, index) => {
                         return (
                             <View style = {[styles.standardWrapper, {flexDirection: 'row'}]} key = {weekdays[index]}>
-                                <Text style = {styles.weekdayText}>{weekdays[index]}</Text>
+                                <Text style = {[styles.weekdayText, {color: colors.text}]}>{weekdays[index]}</Text>
                                 <View style = {styles.hoursTextWrapper}> 
                                     { hour.isOpen? (
                                         <Text style = {[styles.hoursText, {color: colors.text}]}>
@@ -196,22 +220,21 @@ export default function BusinessInfoScreen({ isSaved, businessData }) {
             </View>
 
             <View style = {styles.standardWrapper}>
-                <Text style = {styles.addressText}>
+                <Text style = {[styles.addressText, {color: colors.text}]}>
                     {businessData.address}
                 </Text>
             </View>
             
             <View style = {[styles.standardWrapper, {flexDirection: 'row'}]}>
-                <Text style = {{fontSize: 18, fontWeight: 500, margin: 4}}> 
+                <Text style = {{fontSize: 18, fontWeight: 500, margin: 4, color: colors.text}}> 
                     Business Owner:
                 </Text>
-                <Text style = {{fontSize: 18, fontWeight: 400, margin: 4}}>
+                <Text style = {{fontSize: 18, fontWeight: 400, margin: 4, color: colors.text}}>
                     {businessData.publisher}
                 </Text>
             </View>
             <CopyrightText 
                 size = {16}
-                textColor = {colors.text}
             />
             <Toast />
         </ScrollView>

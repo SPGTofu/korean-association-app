@@ -1,10 +1,13 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button, Dimensions, Image, Keyboard, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { PendingBusinessPageContext } from "../contexts/PendingBusinessPageContext";
 import { useTheme } from "@react-navigation/native";
 import Line from "../other-components/Line";
 import OpenButton from "./OpenButton";
+import ImageButton from "./ImageButton";
+import addImageIcon from "../../assets/logos/add_image_icon_transparent.png";
+import * as ImagePicker from 'expo-image-picker';
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -25,9 +28,9 @@ export default function BusinessPage({ businessData, createToastForPage, handleN
         owner, setOwner,
         publishingHoursDescription, setPublishingHoursDescription,
         fetchPendingBusinessImages,
-        arrayOfPhotoNames, setArrayOfPhotoNames
+        setArrayOfPhotoNames
     } = useContext(PendingBusinessPageContext);
-    
+    const [selectedImage, setSelectedImage] = useState(null);
     // used for the mappedTags
     const businessLinks = [        
         ["Business Website: ", publishingBusinessWebsite, setPublishingBusinessWebsite],
@@ -84,7 +87,6 @@ export default function BusinessPage({ businessData, createToastForPage, handleN
         return (
             <OpenButton
                 key = {index}
-                defaultValue = {day.isOpen}
                 index = {index}
                 setPublishingHours = {setPublishingHours}
                 day = {day}
@@ -111,7 +113,24 @@ export default function BusinessPage({ businessData, createToastForPage, handleN
         createToastForPage('success', 'Reset information to default', 'bottom');
     };
 
+    // gets images
+    const handleGetImages = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({ 
+                mediaType: 'photo',
+                selectionLimit: 12,
+                allowsMultipleSelection: true,
+                maxHeight: 1024,
+                maxWidth: 1024,
+                quality: .7,
+        });
 
+        if (!result.canceled) {
+            setPublishingImages((prevState) => (
+                [...prevState, ...result.assets.map((result) => result.uri)]
+            ))
+        }
+    }
+    
     return (
         <TouchableWithoutFeedback 
             onPress = {() => Keyboard.dismiss()} 
@@ -119,26 +138,56 @@ export default function BusinessPage({ businessData, createToastForPage, handleN
             <ScrollView contentContainerStyle = {styles.container} >
                 <View style = {[styles.nameWrapper, {color: colors.text}]}>
                     <Text style = {[styles.titleText, {color: colors.text}]}>Name: </Text>
-                <TextInput 
-                    style = {[styles.nameInput, {color: colors.text}]}
-                    value = {publishingName}
-                    onChangeText = {(text) => setPublishingName(text)}
-                />
+                    <TextInput 
+                        style = {[styles.nameInput, {color: colors.text}]}
+                        value = {publishingName}
+                        onChangeText = {(text) => setPublishingName(text)}
+                    />
                 </View>
 
                 <DraggableFlatList
                     horizontal
                     containerStyle = {styles.imageContainer}
-                    data = {publishingImages}
+                    data = {[...publishingImages, addImageIcon]}
                     keyExtractor = {(item) => item}
-                    renderItem = {({item, drag, isActive}) => {
+                    renderItem = {({item, drag, isActive, getIndex}) => {
+                        const index = getIndex();
+                        const isAddIcon = index == publishingImages.length;
                         return (
-                            <Pressable onLongPress = {drag}>
+                            <Pressable 
+                                onPress = {() => {
+                                    if (isAddIcon) {
+                                        handleGetImages();
+                                    } else {
+                                        setSelectedImage(item);
+                                    }
+                                }}
+                                onLongPress = {isAddIcon? null : drag}
+                                style = {styles.imageWrapper}
+                            >
                                 <Image
-                                    source = {{uri: item}}
-                                    resizeMode = 'cover'
-                                    style = {[styles.image, (isActive && styles.imageActive)]}
+                                    source = { isAddIcon ? item : {uri: item}}
+                                    resizeMode = {isAddIcon ? 'contain' : 'cover'}
+                                    style = {[styles.image, ((isActive || selectedImage == item) && styles.imageActive)]}
                                 />
+                                {(selectedImage == item && !isAddIcon) &&
+                                    <>
+                                        <ImageButton 
+                                            title = 'Remove'
+                                            position = 'top'
+                                            onPress = {() => {
+                                                setPublishingImages((prevState) =>
+                                                    prevState.filter((image) => image != item)
+                                                )
+                                            }}
+                                        />
+                                        <ImageButton
+                                            title = 'Cancel'
+                                            position = 'bottom'
+                                            onPress = {() => setSelectedImage(null)}
+                                        />
+                                    </> 
+                                }
                             </Pressable>
                         )
                     }}
@@ -353,7 +402,8 @@ const styles = StyleSheet.create({
     nameWrapper: {
         flexDirection: 'row',
         justifyContent: 'center',
-        margin: 4
+        alignItems: 'center',
+        margin: 4,
     },
     container: {
         width: '100%'
@@ -363,11 +413,12 @@ const styles = StyleSheet.create({
         alignItems: "center",
         fontSize: 28,
         fontWeight: 500,
-        padding: 4
+        paddingTop: 4
     },
     image: {
-        width: screenWidth * .7,
-        height: '200',
+        width: '100%',
+        height: '100%',
+        position: 'absolute'
     },
     imageContainer: {
         justifyContent: 'center',
@@ -375,7 +426,12 @@ const styles = StyleSheet.create({
         height: '200',
     },
     imageActive: {
-        opacity: .1
+        opacity: .7
+    },
+    imageWrapper: {
+        width: screenWidth * .7,
+        height: 200,
+        margin: 1
     },
     text: {
         margin: 4,

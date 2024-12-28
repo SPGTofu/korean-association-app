@@ -9,14 +9,44 @@ import {ThemeContext} from './components/contexts/ThemeContext';
 import { UserContext } from './components/contexts/UserContext';
 import { onAuthStateChanged } from 'firebase/auth';
 import { FIREBASE_AUTH } from './FirebaseConfig';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Tab = createBottomTabNavigator();
 
 export default function App() { 
 
-  //setup for dark and light theme
+  // setup for dark and light theme
   const [theme, setTheme] = useState('Light');
-  const themeData = {theme, setTheme};
+
+  // get theme saved in storage
+  useEffect(() => {
+    const getTheme = async () => {
+      try {
+        const savedTheme = await AsyncStorage.getItem("app_theme");
+        console.log(savedTheme);
+        setTheme(savedTheme == '"Dark"' ? savedTheme : 'Light');
+        console.log('using Effect1 in App');
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    getTheme();
+  }, [])
+
+  // handles setting of the theme to save in storage and state
+  const handleSetTheme = async () => {
+    try {
+      const newTheme = (theme == 'Light' ? 'Dark' : 'Light');
+      await AsyncStorage.setItem("app_theme", JSON.stringify(newTheme));
+      setTheme(newTheme);
+      console.log('useing Effect2 in App');
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(()=>{console.log(theme)},[theme])
+  const themeData = {theme, handleSetTheme};
 
   //setup for user auth
   const [user, setUser] = useState(null);

@@ -1,7 +1,6 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import HomeScreen from "../screens/HomeScreen";
-import BusinessInfoScreen from "../screens/BusinessInfoScreen";
-
+import BusinessInfoScreenHome from "../screens/BusinessInfoScreenHome";
 const HomeStack = createStackNavigator();
 
 export default function HomeStackScreen() {
@@ -17,7 +16,7 @@ export default function HomeStackScreen() {
                               options={{ title: 'Home'}}
             />
             <HomeStack.Screen name = "InformationScreen" 
-                              component = {BusinessInfoScreen} 
+                              component = {BusinessInfoScreenHome} 
                               options={{ title: 'Information'}}
             />
         </HomeStack.Navigator>

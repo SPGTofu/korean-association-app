@@ -37,7 +37,7 @@ export const movePendingImageToPublishedImage = async (imageFilePath, imageName)
     // get source file
     const URL = await getDownloadURL(sourceRef);
     const response = await fetch(URL);
-    const blob = response.blob();
+    const blob = await response.blob();
 
     // upload to destination
     await uploadBytes(destinationRef, blob);
@@ -52,11 +52,11 @@ export const movePendingImageToPublishedImage = async (imageFilePath, imageName)
 }
 
 // gets image from the pending images
-export const getPublishedImageFromStorage = async (businessName, imageName) => {
+export const getPublishedImageFromStorage = async (documentID, imageName) => {
   try {
-      const imageFilePath = businessName.replace(/\s/g, '');
-      const imageRef = ref(FIREBASE_STORAGE, `publishedImages/${imageFilePath}/${imageName}.jpg`);
-      return await getDownloadURL(imageRef);
+      const imageRef = ref(FIREBASE_STORAGE, `publishedImages/${documentID}/${imageName}.jpg`);
+      const url = await getDownloadURL(imageRef);
+      return url;
   } catch(error) {
       console.error(error);
       return null;

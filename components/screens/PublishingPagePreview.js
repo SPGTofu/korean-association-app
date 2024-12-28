@@ -6,7 +6,7 @@ export default function PublishingPagePreview({ route }) {
 
     return (
         <View>
-            <BusinessInfoScreen businessData = {previewData}/>
+            <BusinessInfoScreen businessData = {previewData} isPreview = {true}/>
         </View>
     )
 }

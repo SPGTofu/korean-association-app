@@ -12,7 +12,7 @@ export default function ReviewPageCard(props) {
         const fetchFirstImage = async () => {
             if (data?.photos?.[0]) {
                 try {
-                    const firstImageUrl = await getPendingImageFromStorage(data.name, data.photos[0]);
+                    const firstImageUrl = await getPendingImageFromStorage(data.docID, data.photos[0]);
                     setFirstImage(firstImageUrl);
                 } catch (error) {
                     console.error("Error fetching first image: ", error);

@@ -35,7 +35,8 @@ const defaultBusinessData = {
         {isOpen: false, openTime: "", closeTime: ""},
     ],
     hoursDescription: "",
-    imageUriArray: []
+    imageUriArray: [],
+    isOwner: false
 }
 
 export default function SubmitPageStackScreen({ navigation }) {
@@ -87,20 +88,7 @@ export default function SubmitPageStackScreen({ navigation }) {
             return;
         }
         try {
-            createBusinessRequest(
-                businessData.businessName, 
-                businessData.businessDescription, 
-                businessData.businessPhoneNumber, 
-                businessData.businessAddress, 
-                businessData.imageUriArray, 
-                user, 
-                businessData.businessWebsite,
-                businessData.instagram,
-                businessData.yelp,
-                businessData.facebook,
-                businessData.hours,
-                businessData.hoursDescription
-            );
+            createBusinessRequest(businessData, user);
             setBusinessData(defaultBusinessData);
             handleCreateToast(
                 'success', 

@@ -2,9 +2,10 @@ import { useTheme } from "@react-navigation/native";
 import { useContext } from "react";
 import { Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import { SubmitPageStackScreenContext } from "../contexts/SubmitPageStackScreenContext";
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 export default function SubmitPage() {
-    const { setBusinessData } = useContext(SubmitPageStackScreenContext);
+    const { businessData, setBusinessData } = useContext(SubmitPageStackScreenContext);
     const { colors } = useTheme();
     
     return (
@@ -51,7 +52,7 @@ export default function SubmitPage() {
 
                     <TextInput
                         style = {[styles.descriptionBox, {borderColor: colors.text, color: colors.text}]}
-                        placeholder = 'Business Description (160 characters)'
+                        placeholder = 'Business Description (300 characters)'
                         placeholderTextColor = 'gray'
                         onChangeText = {(text) => setBusinessData((prevData) => ({
                             ...prevData,
@@ -59,8 +60,24 @@ export default function SubmitPage() {
                         }))}
                         multiline
                         numberOfLines = {5}
-                        maxLength = {160}
+                        maxLength = {300}
                     />
+
+                    <View style = {{width: '40%'}}> 
+                        <BouncyCheckbox 
+                            isChecked = {businessData.isOwner}
+                            text = "I am the owner"
+                            unFillColor = 'transparent'
+                            fillColor = '#EF5A6F'
+                            textStyle = {{color: colors.text, textDecorationLine: "none"}}
+                            onPress = {() => {
+                                setBusinessData((prevData) => ({
+                                    ...prevData,
+                                    isOwner: !prevData.isOwner
+                                }))
+                            }}
+                        />
+                    </View>
 
                     <TextInput
                         style = {[styles.inputBox, {borderColor: colors.text, color: colors.text}]}

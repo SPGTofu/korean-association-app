@@ -1,5 +1,5 @@
 import { FIREBASE_DB, FIREBASE_STORAGE } from "../FirebaseConfig";
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query, where } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query, setDoc, where } from "firebase/firestore";
 import { movePendingImageToPublishedImage, uploadPendingImageToStorage, uploadingPublishedImageToStorage } from "./storagecalls";
 import { getBlob, ref } from "firebase/storage";
 
@@ -21,6 +21,7 @@ export const addBusinessWithData = async (name, description, phoneNumber, addres
     }
 }
 
+// get the user's name from the database
 export const getUserNameFromDatabase = async (user) => {
     try {
         const userCollectionRef = collection(FIREBASE_DB, "users");
@@ -40,61 +41,67 @@ export const getUserNameFromDatabase = async (user) => {
 
 // create a document in businessRequests to await approval for a publish 
 // also upload images to firebase storage
-export const createBusinessRequest = async (name, 
-                                            description, 
-                                            phoneNumber, 
-                                            address, 
-                                            photosArray, 
-                                            user,
-                                            businessWebsite,
-                                            instagram,
-                                            yelp,
-                                            facebook,
-                                            hours,
-                                            hoursDescription
-                                        ) => {
+export const createBusinessRequest = async (businessData, user) => {
     try {
-        let arrayOfPhotoNames = [];
+        // setup doc to get the ID of it for naming purposes
+        const businessRequestCollectionRef = collection(FIREBASE_DB, "businessRequests");
+        const docRef = await addDoc(businessRequestCollectionRef, {});
+        const docID = docRef.id
 
-        // get user's name
-        const userName = await getUserNameFromDatabase(user);
+        let arrayOfPhotoNames = [];
+        let publisher = {
+            email: "",
+            userName: "",
+        }
+        console.log('check1');
+        // set submitter: 
+        const submitter = {
+            userName: await getUserNameFromDatabase(user),
+            email: user.email
+        };
 
         // set publisher
-        const publisher = {
-            email: user.email,
-            userName: userName
-        }
-    
+        if (businessData.isOwner) {
+            publisher = submitter;
+        };
+        console.log('check2');
+
         // upload each image to storage
-        for (let i = 0; i < photosArray.length; i++) {
-            const imageFilePath = name.replace(/\s/g, '');
-            const imageNameString = imageFilePath + `${i}`;
+        for (let i = 0; i < businessData.imageUriArray.length; i++) {
+            const imageFilePath = docID;
+            const imageNameString = `${imageFilePath}_${i}`;
             try {
-                await uploadPendingImageToStorage(imageFilePath, imageNameString, photosArray[i].uri);
+                await uploadPendingImageToStorage(
+                    imageFilePath, 
+                    imageNameString, 
+                    businessData.imageUriArray[i].uri
+                );
             } catch(error) {
+                console.error(error);
                 return error;
             }
             arrayOfPhotoNames.push(imageNameString);
-        }
+        };
+        console.log('check3');
 
         // add business to pending businesses
-        const businessRequestCollectionRef = collection(FIREBASE_DB, "businessRequests");
-        await addDoc(businessRequestCollectionRef, {
-            name: name,
-            description: description,
-            phonenumber: phoneNumber,
+        console.log('setting');
+        await setDoc(docRef, {
+            name: businessData.businessName,
+            description: businessData.businessDescription,
+            phonenumber: businessData.businessPhoneNumber,
             photos: [...arrayOfPhotoNames],
-            address: address,
-            businessWebsiteInfo: businessWebsite,
-            instagramInfo: instagram,
-            yelpInfo: yelp,
-            facebookInfo: facebook,
-            hours: hours,
-            hoursDescription: hoursDescription,
+            address: businessData.businessAddress,
+            businessWebsiteInfo: businessData.businessWebsite,
+            instagramInfo: businessData.instagram,
+            yelpInfo: businessData.yelp,
+            facebookInfo: businessData.facebook,
+            hours: businessData.hours,
+            hoursDescription: businessData.hoursDescription,
+            submitter: submitter,
             publisher: publisher
         });
-
-        return;
+        console.log('done: ', docID);
     }
     catch (error) {
         console.error(error);
@@ -119,12 +126,6 @@ export const checkIfUserIsAdmin = async (user) => {
         return false;
     }
 }
-
-// return an array of all pending businesses
-export const getArrayOfPendingBusinessesFromRequests = async () => {
-
-}
-
 
 // return collection of business requests from db
 export const returnBusinessRequestCollectionRef = () => {
@@ -152,7 +153,8 @@ export const subscribeToPendingBusinesses = (setArrayOfPendingBusinesses) => {
                         instagramInfo: doc.data().instagramInfo,
                         yelpInfo: doc.data().yelpInfo,
                         hours: doc.data().hours,
-                        hoursDescription: doc.data().hoursDescription
+                        hoursDescription: doc.data().hoursDescription,
+                        docID: doc.id 
                     });
                 });
                 setArrayOfPendingBusinesses(tempArrayOfPendingBusinesses);
@@ -170,7 +172,8 @@ export const sendBusinessDataToDatabase = async (businessData) => {
     try {
         // add doc to database
         const databaseCollectionRef = collection(FIREBASE_DB, "database");
-        await addDoc(databaseCollectionRef, {
+        const pubDocRef = doc(databaseCollectionRef, businessData.docID);
+        await setDoc(pubDocRef, {
             name: businessData.name,
             tags: businessData.tags,
             phoneNumber: businessData.phoneNumber,
@@ -188,26 +191,70 @@ export const sendBusinessDataToDatabase = async (businessData) => {
 
         // remove doc from pending businesses
         const businessRequestsCollectionRef = collection(FIREBASE_DB, "businessRequests");
-        const docQuery = query(businessRequestsCollectionRef, where("name", "==", businessData.name));
-        const querySnapshot = await getDocs(docQuery);
-        if (querySnapshot.empty || querySnapshot.docs.length > 1) {
+        const docRef = doc(businessRequestsCollectionRef, businessData.docID);
+        const docSnapshot = await getDoc(docRef);
+
+        if (!docSnapshot.exists()) {
             console.error("No documents found");
             return;
         }
-        const docName = querySnapshot.docs[0];
-        const deletingDoc = doc(FIREBASE_DB, "businessRequests", docName.id);
-        console.log(deletingDoc);
-        await deleteDoc(deletingDoc);
+        await deleteDoc(docRef);
         console.log('doc deletion successful');
         
         // add images to published images and removes from pending images
         for (let i = 0; i < businessData.photos.length; i++) {
-            const imageFilePath = businessData.name.replace(/\s/g, '');
-            const imageNameString = imageFilePath + `${i}`;
+            const imageFilePath = businessData.docID;
+            const imageNameString = `${imageFilePath}_${i}`;
             await movePendingImageToPublishedImage(imageFilePath, imageNameString);
         }
     } catch(error) {
         console.error(error);
         return null;
     }
+}
+
+// gets business by its name
+export const getPublishedBusinessByID = async (documentID) => {
+    try {
+        const databaseCollectionRef = collection(FIREBASE_DB, "database");
+        const docRef = doc(databaseCollectionRef, documentID);
+        const snapshot = await getDoc(docRef);
+    
+        if (snapshot.exists()) {
+            return {...snapshot.data(), docID: documentID};
+        } else {
+            console.error('document not found');
+            return null;
+        }
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+
+// gets a user's current saved list of businesses
+export const getSavedBusinessesOfUser = async (user) => {
+    try {
+        const userCollectionRef = collection(FIREBASE_DB, "users");
+        const userDocRef = doc(userCollectionRef, user.uid);
+        const userDoc = await getDoc(userDocRef);
+        
+        // checks if user even exists
+        if (userDoc.exists()) {
+            const userDocSaved = userDoc.data().saved;
+            let arrayOfSavedBusinesses = [];
+            for (const business of userDocSaved) {
+                const businessData = await getPublishedBusinessByID(business);
+                arrayOfSavedBusinesses.push(businessData);
+            }
+            return arrayOfSavedBusinesses;
+        } else {
+            console.error('userDoc does not exist');
+            return [];
+        }
+    } catch (error) {
+        console.error(error);
+        return [];
+    }    
 }

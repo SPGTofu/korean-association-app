@@ -30,7 +30,7 @@ export default function PendingBusinessPage({ route, navigation }) {
         if (businessData?.photos?.length > 0) {
             const fetchedURLs = [];
             for (const photo of businessData.photos) {
-                const imageURL = await getPendingImageFromStorage(businessData.name, photo);
+                const imageURL = await getPendingImageFromStorage(businessData.docID, photo);
                 fetchedURLs.push(imageURL);
             }
             setPublishingImages(fetchedURLs);
@@ -56,21 +56,6 @@ export default function PendingBusinessPage({ route, navigation }) {
         arrayOfPhotoNames, setArrayOfPhotoNames
     };
 
-    // context used for creating preview page
-    // const [previewData, setPreviewData] = useState({
-    //     businessName: 'error',
-    //     tags: ["error", "error", "error"],
-    //     phoneNumber: "error",
-    //     businessWebsite: "error",
-    //     instagramLink: "error",
-    //     facebookLink: "error",
-    //     yelpLink: "error",
-    //     description: "error",
-    //     hours: 'error',
-    //     address: 'error',
-    //     owner: 'error',
-    // });
-
     const handleNavigationToBusinessPreview = () => {
         const previewData = {
             name: publishingName,
@@ -85,11 +70,12 @@ export default function PendingBusinessPage({ route, navigation }) {
             address: publishingAddress,
             publisher: owner.userName,
             photos: publishingImages,
-            photoNames: arrayOfPhotoNames
+            photoNames: arrayOfPhotoNames,
+            docID: businessData.docID
         };
         navigation.navigate('PublishingPagePreview', { previewData });
     }
-
+    
     useEffect(() => {
         fetchPendingBusinessImages();
     }, [businessData]);

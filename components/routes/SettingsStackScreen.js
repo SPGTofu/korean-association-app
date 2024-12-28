@@ -6,12 +6,12 @@ import {SignPageContext} from "../contexts/SignPageContext";
 import AccountSettings from "../screens/AccountSettings";
 import Saved from "../screens/Saved";
 import ReviewPage from "../screens/ReviewPage";
-import PendingBusinessPage from "../screens/PendingBusinessPage";
 import SubmitPageStackScreen from "./SubmitPageStackScreen";
 import Toast from "react-native-toast-message";
 import { handleCreateToast } from "../settings-components/Toast";
 import { SettingStackContext } from "../contexts/SettingStackContext"
 import ReviewBusinessStackScreen from "./ReviewBusinessStackScreen";
+import SubmitBusinessEdit from "../screens/SubmitBusinessEdit";
 
 const SettingsStack = createStackNavigator();
 
@@ -59,6 +59,11 @@ export default function SettingStackScreen() {
                         name = "SubmitPageStack" 
                         component = {SubmitPageStackScreen} 
                         options={{title: 'Submit a Page', headerShown: false}}
+                    />
+                    <SettingsStack.Screen 
+                        name = "SubmitBusinessEdit"
+                        component = {SubmitBusinessEdit}
+                        options = {{title: 'Suggest an Edit'}}
                     />
                     <SettingsStack.Screen 
                         name = "ReviewBusinessStack"

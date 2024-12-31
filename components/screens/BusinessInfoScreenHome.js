@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList, Image, ScrollView, Dimensions, Linking, Pressable, TouchableOpacity, LayoutAnimation } from "react-native";
+import { View, Text, StyleSheet, FlatList, Image, ScrollView, Dimensions, Linking, Pressable, TouchableOpacity, LayoutAnimation, Button } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import { handleCreateToast } from "../settings-components/Toast";
@@ -20,12 +20,12 @@ import { getPublishedImageFromStorage } from "../storagecalls";
 
 const screenWidth = Dimensions.get('window').width;
 
-export default function BusinessInfoScreen({ route }) {
+export default function BusinessInfoScreen({ navigation, route }) {
     const { businessData } = route.params
     const { dark, colors } = useTheme();
     const [hoursTabOpen, setHoursTapOpen] = useState(false);
     const [isSaved, setIsSaved ] = useState(false);
-    const [images, setIamges] = useState([]);
+    const [images, setImages] = useState([]);
     
     // get all business images
     useEffect(() => {
@@ -35,7 +35,7 @@ export default function BusinessInfoScreen({ route }) {
                 const image = await getPublishedImageFromStorage(businessData.docID, photoName);
                 tempArrayOfimages.push(image);
             }
-            setIamges(tempArrayOfimages);
+            setImages(tempArrayOfimages);
         }
         handleGetImages();
     }, [businessData])
@@ -89,6 +89,16 @@ export default function BusinessInfoScreen({ route }) {
 
     // used to combine all hours into one function
     const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+    const handleNavigateToBusinessEditInSettings = () => {
+        // done so you don't have to pass whole object to reduce memory usage and overhead
+        const businessProp = {
+            name: businessData.name,
+            address: businessData.address,
+            docID: businessData.docID
+        }
+        navigation.navigate("SubmitBusinessEdit", {business: businessProp})
+    }
 
     return (
         <ScrollView contentContainerStyle = {styles.container}>
@@ -206,26 +216,34 @@ export default function BusinessInfoScreen({ route }) {
                         }
                     </View>
                 </TouchableOpacity>
-                {hoursTabOpen && 
-                    businessData.hours? businessData.hours.map((hour, index) => {
-                        return (
-                            <View style = {[styles.standardWrapper, {flexDirection: 'row'}]} key = {weekdays[index]}>
-                                <Text style = {[styles.weekdayText, {color: colors.text}]}>{weekdays[index]}</Text>
-                                <View style = {styles.hoursTextWrapper}> 
-                                    { hour.isOpen? (
-                                        <Text style = {[styles.hoursText, {color: colors.text}]}>
-                                            {hour.openTime} - {hour.closeTime}
-                                        </Text> 
-                                        ) :
-                                        <Text style = {[styles.hoursText, {color: colors.text}]}>
-                                            Closed
-                                        </Text>
-                                    }
+                {hoursTabOpen && (
+                    businessData.hours ? 
+                        (businessData.hours.map((hour, index) => {
+                            return (
+                                <View 
+                                    style = {[
+                                        styles.standardWrapper, 
+                                        {flexDirection: 'row', alignItems: 'flex-start', margin: 4}
+                                    ]} 
+                                    key = {weekdays[index]}
+                                >
+                                    <Text style = {[styles.weekdayText, {color: colors.text}]}>{weekdays[index]}</Text>
+                                    <View style = {styles.hoursTextWrapper}> 
+                                        { hour.isOpen? (
+                                            <Text style = {[styles.hoursText, {color: colors.text}]}>
+                                                {hour.openTime}
+                                            </Text> 
+                                            ) :
+                                            <Text style = {[styles.hoursText, {color: colors.text}]}>
+                                                Closed
+                                            </Text>
+                                        }
+                                    </View>
                                 </View>
-                            </View>
-                        )
-                    }) : (<Text style = {[styles.text, {color: colors.text}]}>Data not available</Text>)
-                }
+                            )
+                        }))
+                    : (<Text style = {[styles.text, {color: colors.text}]}>Data not available</Text>)
+                )}
             </View>
 
             <View style = {styles.standardWrapper}>
@@ -239,9 +257,16 @@ export default function BusinessInfoScreen({ route }) {
                     Business Owner:
                 </Text>
                 <Text style = {{fontSize: 18, fontWeight: 400, margin: 4, color: colors.text}}>
-                    {businessData.publisher || 'No Owner'} 
+                    {businessData?.publisher?.userName
+                        ? businessData.publisher.userName
+                        : 'Unclaimed'
+                    } 
                 </Text>
             </View>
+            <Button 
+                title = 'Spot an issue?'
+                onPress = {() => handleNavigateToBusinessEditInSettings()}
+            />
             <CopyrightText 
                 size = {16}
             />
@@ -271,7 +296,7 @@ const styles = StyleSheet.create({
         width: 100,
     },
     hoursTextWrapper: {
-        width: 120,
+        width: 200,
         alignItems: 'flex-end',
     },
     hoursText: {

@@ -92,10 +92,12 @@ export default function SubmitPhotosScreen() {
                                     <ImageButton 
                                         title = 'Remove'
                                         position = 'top'
+                                        color = {colors.text}
                                         onPress = {() => handleRemoveImage(item.uri)}
                                     />
                                     <ImageButton 
                                         title = 'Cancel'
+                                        color = {colors.text}
                                         onPress = {() => handleCancelPressed()}
                                         position = 'bottom'
                                     />

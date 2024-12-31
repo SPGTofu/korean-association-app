@@ -31,7 +31,7 @@ export default function BusinessPage({ businessData, createToastForPage, handleN
         setArrayOfPhotoNames
     } = useContext(PendingBusinessPageContext);
     const [selectedImage, setSelectedImage] = useState(null);
-    // used for the mappedTags
+    // used for the mappedLinks
     const businessLinks = [        
         ["Business Website: ", publishingBusinessWebsite, setPublishingBusinessWebsite],
         ["Facebook Link: ", publishingBusinessFacebookInfo, setPublishingBusinessFacebookInfo],
@@ -105,7 +105,6 @@ export default function BusinessPage({ businessData, createToastForPage, handleN
         setPublishingBusinessInstagramInfo(businessData.instagramInfo);
         setPublishingBusinessYelpInfo(businessData.yelpInfo);
         setPublishingHours([...businessData.hours]);
-        setOwner(businessData.publisher);
         setPublishingHoursDescription(businessData.hoursDescription);
         setTags(["","",""]);
         fetchPendingBusinessImages();
@@ -175,6 +174,7 @@ export default function BusinessPage({ businessData, createToastForPage, handleN
                                         <ImageButton 
                                             title = 'Remove'
                                             position = 'top'
+                                            colors = {colors.text}
                                             onPress = {() => {
                                                 setPublishingImages((prevState) =>
                                                     prevState.filter((image) => image != item)
@@ -184,6 +184,7 @@ export default function BusinessPage({ businessData, createToastForPage, handleN
                                         <ImageButton
                                             title = 'Cancel'
                                             position = 'bottom'
+                                            colors = {colors.text}
                                             onPress = {() => setSelectedImage(null)}
                                         />
                                     </> 
@@ -194,7 +195,7 @@ export default function BusinessPage({ businessData, createToastForPage, handleN
                     onDragEnd = {({data}) => setPublishingImages(data)}
                 />
                 <Text style = {[styles.text, {color: colors.text}]}>
-                    Drag and drop image to change order
+                    Drag images to change order
                 </Text>
                 <Line />
                 
@@ -269,8 +270,8 @@ export default function BusinessPage({ businessData, createToastForPage, handleN
                         <Text style = {[styles.standardText, {color: colors.text}]}>Owner </Text>
                         <TextInput 
                             style = {[styles.publisherInput, {color: colors.text, borderColor: colors.text}]}
-                            value = {owner.userName}
-                            onChangeText={(text) => setOwner((prevOwner) => ({...prevOwner, userName: text}))}
+                            editable = {false}
+                            value = {owner.userName || 'Unclaimed'}
                         />
                     </View>
                     <View style = {styles.publisherBlocks}>

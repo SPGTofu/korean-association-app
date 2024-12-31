@@ -12,6 +12,7 @@ import { handleCreateToast } from "../settings-components/Toast";
 import { SettingStackContext } from "../contexts/SettingStackContext"
 import ReviewBusinessStackScreen from "./ReviewBusinessStackScreen";
 import SubmitBusinessEdit from "../screens/SubmitBusinessEdit";
+import ReviewBusinessEditStack from "./ReviewBusinessEditStack";
 
 const SettingsStack = createStackNavigator();
 
@@ -68,7 +69,12 @@ export default function SettingStackScreen() {
                     <SettingsStack.Screen 
                         name = "ReviewBusinessStack"
                         component = {ReviewBusinessStackScreen}
-                        options = {{title: 'Review Page', headerShown: false}}
+                        options = {{title: 'Review New Businesses', headerShown: false}}
+                    />
+                    <SettingsStack.Screen 
+                        name = "ReviewBusinessEditStack"
+                        component = {ReviewBusinessEditStack}
+                        options = {{title: 'Review Business Issues', headerShown: false}}
                     />
                 </SettingsStack.Navigator>
                 <Toast />

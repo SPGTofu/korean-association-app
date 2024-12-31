@@ -26,13 +26,13 @@ const defaultBusinessData = {
     yelp: "",
     facebook: "",
     hours: [
-        {isOpen: false, openTime: "", closeTime: ""},
-        {isOpen: false, openTime: "", closeTime: ""},
-        {isOpen: false, openTime: "", closeTime: ""},
-        {isOpen: false, openTime: "", closeTime: ""},
-        {isOpen: false, openTime: "", closeTime: ""},
-        {isOpen: false, openTime: "", closeTime: ""},
-        {isOpen: false, openTime: "", closeTime: ""},
+        {isOpen: false, openTime: ""},
+        {isOpen: false, openTime: ""},
+        {isOpen: false, openTime: ""},
+        {isOpen: false, openTime: ""},
+        {isOpen: false, openTime: ""},
+        {isOpen: false, openTime: ""},
+        {isOpen: false, openTime: ""},
     ],
     hoursDescription: "",
     imageUriArray: [],
@@ -123,7 +123,7 @@ export default function SubmitPageStackScreen({ navigation }) {
                         <Button
                             title = "Next"
                             color = 'white'
-                            onPress = {() => {handleNavigateToBusinessHours()}}
+                            onPress = {() => handleNavigateToBusinessHours()}
                         />
                     )
 
@@ -138,7 +138,7 @@ export default function SubmitPageStackScreen({ navigation }) {
                         <Button 
                             title = "Next"
                             color = "white"
-                            onPress = {() => {handleSubmitHours()}}
+                            onPress = {() => handleSubmitHours()}
 
                         />
                     )

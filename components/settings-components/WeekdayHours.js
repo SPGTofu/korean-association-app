@@ -29,18 +29,7 @@ export default function WeekdayHours({ day, dateIndex }) {
             ))
         }))
     }
-
-    // update the closing time of the day selected
-    const updateCloseTimeOfDay = (text) => {
-        setBusinessData((prevState) => ({
-            ...prevState,
-            hours: prevState.hours.map((hour, index) => (
-                index === dateIndex ? {...hour, closeTime: text}
-                    : hour
-            ))
-        }))
-    }
- 
+    
     return (
         <View style = {styles.weekdayObject}>
             <View style = {styles.weekdayContainer}>
@@ -57,18 +46,13 @@ export default function WeekdayHours({ day, dateIndex }) {
             {businessData.hours[dateIndex].isOpen ? (
                 <View style = {styles.dayHoursContainer} > 
                     <Text style = {[styles.hoursText, {color: colors.text}]}>
-                        From: 
-                    </Text>
-                    <TextInput 
-                        style = {[styles.textInput, {color: colors.text, borderColor: colors.text}]}
-                        onChangeText = {(text) => updateOpenTimeOfDay(text)}
-                    />
-                    <Text style = {[styles.hoursText, {color: colors.text}]}>
-                        To: 
+                        Time(s):
                     </Text>
                     <TextInput 
                         style = {[styles.textInput, {color: colors.text, borderColor: colors.text}]} 
-                        onChangeText = {(text) => updateCloseTimeOfDay(text)}
+                        onChangeText = {(text) => updateOpenTimeOfDay(text)}
+                        placeholder = '10:00AM-2:00PM, 3:00PM-8:00PM'
+                        placeholderTextColor = 'gray'
                     />
                 </View>
             ) : null}
@@ -88,14 +72,12 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
     },
-    switchContainer: {
-    },
     weekdayObject: {
         margin: 4,
     },
     textInput: {
         borderWidth: 1,
-        width: 80,
+        width: 260,
         borderRadius: 4,
         height: 30,
         marginHorizontal: 4,
@@ -110,6 +92,7 @@ const styles = StyleSheet.create({
         marginVertical: 4
     },
     hoursText: {
-        marginHorizontal: 4
+        marginHorizontal: 4,
+        fontSize: 16
     }
 })

@@ -20,7 +20,7 @@ import { ReviewBusinessStackScreenContext } from "../contexts/ReviewBusinessStac
 
 const screenWidth = Dimensions.get('window').width;
 
-export default function BusinessInfoScreen({ isSaved, businessData, isPreview}) {
+export default function BusinessInfoScreen({ isSaved, businessData, isPreview }) {
     const { dark, colors } = useTheme();
     const [hoursTabOpen, setHoursTapOpen] = useState(false);
     const { handleSetPublishingbusinessData } = useContext(ReviewBusinessStackScreenContext);
@@ -93,7 +93,7 @@ export default function BusinessInfoScreen({ isSaved, businessData, isPreview}) 
                     renderItem = {({ item }) => {
                         return (
                             <Image 
-                                source = {{uri: item || noImageIcon}}
+                                source = {{uri: item}}
                                 style = {styles.photo}
                             />
                         )
@@ -200,12 +200,18 @@ export default function BusinessInfoScreen({ isSaved, businessData, isPreview}) 
                 {hoursTabOpen && 
                     businessData.hours.map((hour, index) => {
                         return (
-                            <View style = {[styles.standardWrapper, {flexDirection: 'row'}]} key = {weekdays[index]}>
+                            <View 
+                                style = {
+                                    [styles.standardWrapper, 
+                                    {flexDirection: 'row', alignItems: 'flex-start', margin: 4}
+                                ]} 
+                                key = {weekdays[index]}
+                            >
                                 <Text style = {[styles.weekdayText, {color: colors.text}]}>{weekdays[index]}</Text>
                                 <View style = {styles.hoursTextWrapper}> 
                                     { hour.isOpen? (
                                         <Text style = {[styles.hoursText, {color: colors.text}]}>
-                                            {hour.openTime} - {hour.closeTime}
+                                            {hour.openTime}
                                         </Text> 
                                         ) :
                                         <Text style = {[styles.hoursText, {color: colors.text}]}>
@@ -230,7 +236,10 @@ export default function BusinessInfoScreen({ isSaved, businessData, isPreview}) 
                     Business Owner:
                 </Text>
                 <Text style = {{fontSize: 18, fontWeight: 400, margin: 4, color: colors.text}}>
-                    {businessData.publisher}
+                    {businessData?.publisher?.userName
+                        ? businessData.publisher.userName 
+                        : 'Unclaimed'
+                    }
                 </Text>
             </View>
             <CopyrightText 
@@ -262,7 +271,7 @@ const styles = StyleSheet.create({
         width: 100,
     },
     hoursTextWrapper: {
-        width: 120,
+        width: 200,
         alignItems: 'flex-end',
     },
     hoursText: {

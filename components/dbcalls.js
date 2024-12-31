@@ -1,6 +1,6 @@
 import { FIREBASE_DB, FIREBASE_STORAGE } from "../FirebaseConfig";
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query, setDoc, where } from "firebase/firestore";
-import { movePendingImageToPublishedImage, uploadPendingImageToStorage, uploadingPublishedImageToStorage } from "./storagecalls";
+import { deleteFolderInBusinessEditImages, deletePublishedImagesOfBusinessInStorage, movePendingImageToPublishedImage, removePublishedImageIfNotInURLArray, returnArrayOfImageNamesInOrderGiven, returnArrayOfImagesNotInPublishedImageOfBusiness, uploadBusinessEditImage, uploadPendingImageToStorage, uploadPublishedImageToStorage, uploadingPublishedImageToStorage } from "./storagecalls";
 import { getBlob, ref } from "firebase/storage";
 
 /* create a document with the business' 
@@ -117,7 +117,7 @@ export const checkIfUserIsAdmin = async (user) => {
         if (userDoc.exists()) {
             return userDoc.data().roles.includes("admin");
         } else {
-            console.error('userDoc does not exist');
+            console.error('admin: userDoc does not exist');
             return false;
         }
     }
@@ -167,6 +167,44 @@ export const subscribeToPendingBusinesses = (setArrayOfPendingBusinesses) => {
      }
 }
 
+// update business with edits made
+export const updatePublishedBusinessDataWithEdits = async (businessData) => {
+    try {
+        console.log('images in 173 dbCalls: ', businessData.photos);
+        // checks if any current images were removed from the edited business
+        await removePublishedImageIfNotInURLArray(businessData.photos, businessData.docID);
+
+        // upload array of image and return array of its file names in order
+        const arrayOfImageNames = await returnArrayOfImageNamesInOrderGiven(
+            businessData.photos, 
+            businessData.docID
+        );
+        console.log('updated current images: ', arrayOfImageNames);
+        
+        // update doc
+        const pubDocRef = doc(FIREBASE_DB, 'database', businessData.docID);
+        await setDoc(pubDocRef, {
+            name: businessData.name,
+            tags: businessData.tags,
+            phoneNumber: businessData.number,
+            businessWebsiteInfo: businessData.businessWebsite,
+            instagramInfo: businessData.instagram,
+            facebookInfo: businessData.facebook,
+            yelpInfo: businessData.yelp,
+            description: businessData.description,
+            hours: businessData.hours,
+            address: businessData.address,
+            publisher: businessData.publisher,
+            photos: [...arrayOfImageNames],
+            docID: businessData.docID
+        })
+        console.log('doc edit successful');
+        
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 // sends business into database
 export const sendBusinessDataToDatabase = async (businessData) => {
     try {
@@ -185,7 +223,8 @@ export const sendBusinessDataToDatabase = async (businessData) => {
             hours: businessData.hours,
             address: businessData.address,
             publisher: businessData.publisher,
-            photos: businessData.photoNames
+            photos: businessData.photoNames,
+            docID: businessData.docID
         });
         console.log('doc addition successful');
 
@@ -243,6 +282,9 @@ export const getSavedBusinessesOfUser = async (user) => {
         // checks if user even exists
         if (userDoc.exists()) {
             const userDocSaved = userDoc.data().saved;
+            if (userDocSaved == []) {
+                return userDocSaved;
+            }
             let arrayOfSavedBusinesses = [];
             for (const business of userDocSaved) {
                 const businessData = await getPublishedBusinessByID(business);
@@ -250,11 +292,90 @@ export const getSavedBusinessesOfUser = async (user) => {
             }
             return arrayOfSavedBusinesses;
         } else {
-            console.error('userDoc does not exist');
+            console.error('saved: userDoc does not exist');
             return [];
         }
     } catch (error) {
         console.error(error);
         return [];
     }    
+}
+
+// creatse a business edit request and stores images if needed. 
+// input data should hold business's name and address and user's descritpion and images
+export const createBusinessEditRequest = async (business, inputData, user) => {
+    try {
+        // Create business ref and get ID
+        const businessEditRequestRef = collection(FIREBASE_DB, "businessEditRequests");
+        const docRef = await addDoc(businessEditRequestRef, {});
+        const docID = docRef.id;
+
+        // define editor
+        const editorName = await getUserNameFromDatabase(user);
+        const editor = {
+            userName: editorName,
+            email: user.email
+        }
+
+        //define image names
+        const arrayOfImageNames = [];
+        for (let i = 0; i < inputData.images.length; i++) {
+            const filePath = docID;
+            const imageName = `${filePath}_${i}`;
+            arrayOfImageNames.push(imageName);
+            await uploadBusinessEditImage(filePath, imageName, inputData.images[i]);
+        };
+
+        // Store busienssID, edit/suggestion, editor, and images
+        await setDoc(docRef, {
+            businessID: business.docID,
+            editDescription: inputData.description,
+            images: arrayOfImageNames,
+            publisher: editor
+        });
+
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+// fetches all business edit requests
+export const getBusinessEditRequests = async () => {
+    try {
+        const businessEditRequestCollection = collection(FIREBASE_DB, "businessEditRequests");
+        const requestQuery = query(businessEditRequestCollection);
+        const snapshot = await getDocs(requestQuery);
+
+        const editRequests = snapshot.docs.map((doc) => ({
+            ...doc.data(),
+            id: doc.id
+        }))
+
+        return editRequests;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+// fetch business name by ID
+export const getBusinessNameFromDatabaseUsingID = async (businessID) => {
+    try {
+        const businessRef = doc(FIREBASE_DB, "database", businessID);
+        const businessDoc = await getDoc(businessRef);
+        return businessDoc.data().name;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+// remove business from edit business request collection
+export const removeBusinessEditRequestByID = async (requestID) => {
+    try {
+        const businessDoc = doc(FIREBASE_DB, "businessEditRequests", requestID);
+        await deleteDoc(businessDoc);
+        await deleteFolderInBusinessEditImages(requestID);
+
+    } catch (error) {
+        console.error(error);
+    }
 }

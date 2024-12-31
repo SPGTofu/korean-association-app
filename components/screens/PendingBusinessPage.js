@@ -68,7 +68,7 @@ export default function PendingBusinessPage({ route, navigation }) {
             description: publishingDescription,
             hours: publishingHours,
             address: publishingAddress,
-            publisher: owner.userName,
+            publisher: owner,
             photos: publishingImages,
             photoNames: arrayOfPhotoNames,
             docID: businessData.docID

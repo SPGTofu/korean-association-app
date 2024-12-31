@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 
 export default function ImageButton(props) {
-    const { title, onPress, position } = props;
+    const { colors, title, onPress, position } = props;
     return (
         <TouchableOpacity 
             style = {[styles.container, 
@@ -9,7 +9,7 @@ export default function ImageButton(props) {
                 ]}
             onPress = {()=> onPress? onPress() : null}
         >
-            <Text style = {styles.text}>
+            <Text style = {[styles.text, {color: colors || 'black'}]}>
                 {title}
             </Text>
         </TouchableOpacity>

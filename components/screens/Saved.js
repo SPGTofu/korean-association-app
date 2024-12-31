@@ -28,7 +28,7 @@ export default function Saved({ navigation }) {
 
     return (
         <ScrollView>
-            <Text style = {styles.title}>Saved Businesses</Text>
+            <Text style = {[styles.title, {color: colors.text}]}>Saved Businesses</Text>
             {userSavedList?.length > 0 ? 
                 userSavedList.map((business, index) => {
                     if (business == null) {
@@ -38,7 +38,7 @@ export default function Saved({ navigation }) {
                     return (          
                         <TouchableOpacity 
                             key = {index}
-                            style = {styles.container}
+                            style = {[styles.container, {borderColor: colors.text}]}
                             onPress = {() => navigateToBusinessInHomeTab(business)}
                         > 
                             <View style = {styles.view}>
@@ -46,7 +46,7 @@ export default function Saved({ navigation }) {
                                     business = {business}
                                     style = {styles.image}
                                 />
-                                <Text style = {[styles.text, {color: colors.text}]}>
+                                <Text style = {[styles.text]}>
                                     {business?.name || "Business Unavailable"}
                                 </Text>
                             </View>
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
         fontWeight: '600'
     },
     noBusinessText: {
-        fontsize: 20,
+        fontSize: 20,
         textAlign: 'center',
         margin: 4,
         fontWeight: '400'
@@ -84,13 +84,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'top',
         width: '98%',
-        height: 270,
+        height: 230,
         borderRadius: 8,
         backgroundColor: '#f4f4f4',
+        margin: 4
     },
     image: {
-        height: 240,
+        height: 200,
         width: '100%',
+        borderTopLeftRadius: 8,
+        borderTopRightRadius: 8,
         backgroundColor: 'black',
         resizeMode: 'cover'
     },

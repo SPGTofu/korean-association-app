@@ -4,7 +4,6 @@ import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-nativ
 
 export default function OpenButton(props) {
     const { 
-        defaultValue, 
         setPublishingHours, 
         index,
         day
@@ -32,7 +31,9 @@ export default function OpenButton(props) {
                 </TouchableOpacity>
             </View>
             <View style = {styles.timeWrapper}>
-                <Text style = {[styles.timeText, {color: (day.isOpen ? colors.text : offColor)}]}>From: </Text>
+                <Text style = {[styles.timeText, {color: (day.isOpen ? colors.text : offColor)}]}>
+                    Hour(s):  
+                </Text>
                 <TextInput 
                     editable = {day.isOpen}
                     style = {[styles.timeInput, 
@@ -40,6 +41,8 @@ export default function OpenButton(props) {
                              {color: (day.isOpen ? colors.text : offColor)}
                     ]}
                     value = {day.openTime}
+                    placeholder = {day.isOpen ? '10:00AM-2:00PM, 3:00PM-8:30PM' : ''}
+                    placeholderTextColor = 'gray'
                     onChangeText = {(text) => {
                         setPublishingHours((prevState) => {
                             const newHours = [...prevState];
@@ -48,21 +51,6 @@ export default function OpenButton(props) {
                         })
                     }}
                 />
-                <Text style = {[styles.timeText, {color: (day.isOpen ? colors.text : offColor)}]}>To: </Text>
-                <TextInput 
-                    editable = {day.isOpen}
-                    style = {[styles.timeInput, 
-                             {borderColor: (day.isOpen ? colors.text : offColor)},
-                             {color: (day.isOpen ? colors.text : offColor)}
-                    ]}                    value = {day.closeTime}
-                    onChangeText = {(text) => {
-                        setPublishingHours((prevState) => {
-                            const newHours = [...prevState];
-                            newHours[index] = { ...newHours[index], closeTime: text};
-                            return newHours;
-                        })
-                    }} 
-                /> 
             </View>
         </View>
     )
@@ -92,8 +80,8 @@ const styles = StyleSheet.create({
         padding: 4,
         borderWidth: 1,
         borderRadius: 6,
-        width: '80',
-        height: '28',
+        width: 280,
+        height: 30,
         marginRight: 8,
     },
     hoursWrapper: {
@@ -104,7 +92,7 @@ const styles = StyleSheet.create({
     timeText: {
         fontSize: 18,
         fontWeight: 400,
-        marginVertical: 4,
+        margin: 4
     },
     timeWrapper: {
         flexDirection: 'row',

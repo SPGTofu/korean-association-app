@@ -10,6 +10,7 @@ import { ReligiousInstitutions } from '../../assets/business-data/ReligiousInsti
 import { Salons } from '../../assets/business-data/Salons';
 import { Services } from '../../assets/business-data/Services';
 import { useTheme } from '@react-navigation/native';
+import CopyrightText from '../other-components/CopyrightText';
 
 
 export default function HomeScreen({ navigation }) {
@@ -33,6 +34,7 @@ export default function HomeScreen({ navigation }) {
                         <HorizontalScroll businessData = { data }/>
                     </View>
                 ))}
+                <CopyrightText />
             </ScrollView>
         </NavigationContext.Provider>        
     )

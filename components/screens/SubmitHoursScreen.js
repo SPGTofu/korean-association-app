@@ -1,7 +1,7 @@
 import { useTheme } from "@react-navigation/native";
-import { useContext, useState } from "react";
-import { Keyboard, RecyclerViewBackedScrollViewBase, TextInput } from "react-native";
-import { KeyboardAvoidingView, ScrollView, StyleSheet, Switch, Text, TouchableWithoutFeedback, View } from "react-native";
+import { useContext } from "react";
+import { Keyboard, TextInput } from "react-native";
+import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
 import { SubmitPageStackScreenContext } from "../contexts/SubmitPageStackScreenContext";
 import WeekdayHours from "../settings-components/WeekdayHours";
 

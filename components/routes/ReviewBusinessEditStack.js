@@ -21,9 +21,9 @@ export default function ReviewBusinessEditStack({ navigation }) {
         await updatePublishedBusinessDataWithEdits(editedBusinessData);
 
         // remove from businessEditRequests collection
-        await removeBusinessEditRequestByID(editedBusinessData.docID);
+        await removeBusinessEditRequestByID(editedBusinessData.requestID);
 
-        createToastOnSettingStack('success', 'Business Has Been Published', 'bottom');
+        createToastOnSettingStack('success', 'Business Has Been Edited', 'bottom');
         navigation.goBack(4);
     }
 

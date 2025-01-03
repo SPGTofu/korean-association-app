@@ -1,7 +1,7 @@
 import { createStackNavigator } from "@react-navigation/stack"
-import PublishingPagePreview from "../screens/PublishingPagePreview";
-import ReviewPage from "../screens/ReviewPage";
-import PendingBusinessPage from "../screens/PendingBusinessPage";
+import PublishingPagePreview from "../screens/business-review-screens/PublishingPagePreview";
+import ReviewPage from "../screens/business-review-screens/ReviewPage";
+import PendingBusinessPage from "../screens/business-review-screens/PendingBusinessPage";
 import { Button } from "react-native";
 import { useContext, useState } from "react";
 import { ReviewBusinessStackScreenContext } from "../contexts/ReviewBusinessStackScreenContext";

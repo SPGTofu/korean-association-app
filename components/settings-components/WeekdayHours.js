@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         width: 260,
         borderRadius: 4,
-        height: 30,
+        height: 40,
         marginHorizontal: 4,
         padding: 4
 

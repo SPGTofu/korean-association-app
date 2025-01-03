@@ -1,5 +1,5 @@
-import { Dimensions, Image, Keyboard, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
-import { getPublishedBusinessByID } from "../../dbcalls";
+import { Button, Dimensions, Image, Keyboard, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
+import { getPublishedBusinessByID, removeBusinessEditRequestByID } from "../../dbcalls";
 import { useContext, useEffect, useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import { getPublishedImageFromStorage } from "../../storagecalls";
@@ -12,11 +12,15 @@ import Line from "../../other-components/Line";
 import { EditBusinessStackContext } from "../../contexts/EditBusinessStackContext";
 import OpenButtonBusinessEdit from "../../settings-components/OpenButtonBusinessEdit";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { SettingStackContext } from "../../contexts/SettingStackContext";
+import DropDownPicker from "react-native-dropdown-picker";
 
 const screenWidth = Dimensions.get("window").width;
 
 export default function EditBusinessInfo({ navigation, route}) {
-    const { images, businessID, publisher } = route.params;
+    const [modalVisible, setModalVisible] = useState(false);
+    const { createToastOnSettingStack } = useContext(SettingStackContext);
+    const { images, businessID, publisher, requestID } = route.params;
     const [defaultValues, setDefaultValues] = useState({});
     const { colors } = useTheme();
     const [selectedImage, setSelectedImage] = useState("");
@@ -33,13 +37,26 @@ export default function EditBusinessInfo({ navigation, route}) {
         photos: [],
         publisher: {userName: "", email: ""},
         tags: [],
-        yelp: ""
+        yelp: "",
+        type: ""
     });
+    const [dropDownOpen, setDropDownOpen] = useState(false);
+    const [dropDownItems, setDropDownItems] = useState([
+        { label: 'Clinic', value: 'Clinic' },
+        { label: 'Eatery', value: 'Eatery'},
+        { label: 'Market', value: 'Market'},
+        { label: 'Real Estate', value: 'Real Estate'},
+        { label: 'Finance', value: 'Finance'},
+        { label: 'Religious Institution', value: 'Religious Institution'},
+        { label: 'Salon', value: 'Salon'},
+        { label: 'Service', value: 'Service'},
+        { label: 'Other', value: 'Other'},
+    ]);
+
 
     // fetches busienssData
     const fetchBusinessData = async () => {
         const business = await getPublishedBusinessByID(businessID);
-        console.log(business);
         // create array of the business's images
         const arrayOfImages = [];
         for (const image of business.photos) {
@@ -49,6 +66,7 @@ export default function EditBusinessInfo({ navigation, route}) {
 
         if (business != null) {
             const value = {
+                requestID: requestID,
                 docID: business.docID || "",
                 name: business.name || "",
                 address: business.address || "",
@@ -61,7 +79,8 @@ export default function EditBusinessInfo({ navigation, route}) {
                 photos: [...arrayOfImages, ...images] || [],
                 publisher: business.publisher || {userName: "", email: ""},
                 tags: business.tags || ["","",""],
-                yelp: business.yelp || ""
+                yelp: business.yelp || "",
+                type: business.type || ""
             };
             setBusinessData(value);
             setDefaultValues(value);
@@ -206,6 +225,14 @@ export default function EditBusinessInfo({ navigation, route}) {
         navigation.navigate('PreviewEditedBusinessPage');
     }
 
+    // Handles reject when button is pressed
+    const handleReject = async () => {
+        setModalVisible(false);
+        await removeBusinessEditRequestByID(businessData.requestID);
+        navigation.navigate("SettingsScreen");
+        createToastOnSettingStack('success', 'Rejected business edits', 'bottom');
+    }
+
     return (
         <TouchableWithoutFeedback onPress = {() => Keyboard.dismiss()}>
             <ScrollView style = {styles.container}>
@@ -310,6 +337,27 @@ export default function EditBusinessInfo({ navigation, route}) {
                 </View>
                 <Line />
 
+                <View style = {styles.standardWrapper}>
+                    <Text style = {[styles.title, {color: colors.text}]}>Business Type</Text>
+                    <DropDownPicker
+                            open = {dropDownOpen}
+                            listMode = 'SCROLLVIEW'
+                            setOpen = {setDropDownOpen}
+                            items = {dropDownItems}
+                            multiple = {false}
+                            value = {businessData.type}
+                            setValue = {(callback) => {
+                                const value = callback();
+                                setFieldInBusinessData('type', value);
+                            }}
+                            style = {{ width: '80%', margin: 8, backgroundColor: '#f4f4f4'}}
+                            contentContainerStyle = {{justifyContent: 'center', alignItems: 'center'}}
+                            dropDownContainerStyle = {{backgroundColor: '#f4f4f4', width: '82%'}}
+                            labelStyle = {{color: colors.text}}
+                        />
+                </View>
+                <Line />
+
                 <View style = {styles.hoursContainer}>
                     <Text style = {[styles.title, {color: colors.text}]}>Hours</Text>
                     {mappedHours}
@@ -364,6 +412,13 @@ export default function EditBusinessInfo({ navigation, route}) {
                         <Text style = {styles.buttonText}>Reset to Default</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
+                        onPress = {() => setModalVisible(true)}
+                        style = {styles.button}
+
+                    >
+                        <Text style = {styles.buttonText}>Reject</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
                         onPress = {() => handlePreviewButtonPressed()}
                         style = {styles.button}
                     >
@@ -371,7 +426,28 @@ export default function EditBusinessInfo({ navigation, route}) {
                     </TouchableOpacity>
                 </View>
 
-
+                <Modal
+                    animationType = 'fade'
+                    transparent = {true}
+                    visible = {modalVisible}
+                    onRequestClose = {() => setModalVisible(false)}
+                >
+                    <View style = {styles.modalWrapper}>
+                        <View style = {styles.modalView}>
+                            <Text style = {styles.modalText}>
+                                Would you like to delete the business edit request?
+                            </Text>
+                            <Button
+                                title = 'Cancel'
+                                onPress = {() => setModalVisible(false)}
+                            />
+                            <Button 
+                                title = 'Confirm'
+                                onPress = {() => handleReject()}
+                            />
+                        </View>
+                    </View>
+                </Modal>
                 <Toast />
             </ScrollView>
         </TouchableWithoutFeedback>
@@ -380,6 +456,32 @@ export default function EditBusinessInfo({ navigation, route}) {
 
 
 const styles = StyleSheet.create({
+    modalText: {
+        margin: 4,
+        fontSize: 18,
+        padding: 4,
+        textAlign: 'center'
+    },
+    modalWrapper: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        flex: 1,
+    },
+    modalView: {
+        margin: 10,
+        backgroundColor: 'white',
+        height: 200,
+        width: 220,
+        borderRadius: 8,
+        justifyContent: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+    },
     buttonText: {
         fontSize: 16,
         fontWeight: 400,

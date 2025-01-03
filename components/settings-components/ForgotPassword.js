@@ -1,6 +1,6 @@
 import { useTheme } from '@react-navigation/native';
 import React, { useContext, useState } from 'react';
-import { ActivityIndicator, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { ActivityIndicator, Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import { doSendPasswordResetEmail } from '../auth';
 import { SignPageContext } from '../contexts/SignPageContext';
 
@@ -31,7 +31,7 @@ export default function ForgotPassword({ handleCreateToast, navigation }) {
 
     return (
         <TouchableWithoutFeedback onPress = {() => Keyboard.dismiss()}>
-            <View style = {styles.container}>
+            <ScrollView contentContainerStyle = {styles.container}>
                 <Text style = {[styles.title, {color: colors.text}]}> Reset Your Password</Text>
                 <Text style = {[styles.text, {color: colors.text}]}>Enter your email and we'll send you a link to reset your password</Text>
                 <TextInput 
@@ -44,7 +44,7 @@ export default function ForgotPassword({ handleCreateToast, navigation }) {
                     <Text>Send Link</Text>
                 </TouchableOpacity>
                 {loading && <ActivityIndicator size = 'small' color = {colors.text} />}
-            </View>
+            </ScrollView>
         </TouchableWithoutFeedback>
     );
 }

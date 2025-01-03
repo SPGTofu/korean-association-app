@@ -44,6 +44,7 @@ export default function RequestDetailsPage({ navigation, route }) {
         navigation.navigate("EditBusinessInfoPage", {
             images: images,
             businessID: requestData.businessID,
+            requestID: requestData.id,
             publisher: requestData.publisher
         });
     }

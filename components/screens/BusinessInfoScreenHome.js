@@ -124,7 +124,9 @@ export default function BusinessInfoScreen({ navigation, route }) {
                     { tagExists && 
                         <View style = {styles.tagsWrapper}>
                             <Text style = {[styles.tagsText, {color: colors.text}]}>
-                                {businessData.tags[0]}, {businessData.tags[1]}, {businessData.tags[2]}
+                                {businessData.tags[0].replace(/\s+/g, '') != "" && businessData.tags[0]} 
+                                {businessData.tags[1].replace(/\s+/g, '') != "" && ', ' + businessData.tags[1]} 
+                                {businessData.tags[2].replace(/\s+/g, '') != "" && ', ' + businessData.tags[2]}
                             </Text>
                         </View>
                     }

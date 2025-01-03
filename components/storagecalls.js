@@ -194,3 +194,15 @@ export const deleteFolderInBusinessEditImages = async (folderName) => {
     console.error(error);
   }
 }
+
+// delete the pending images of a business
+export const deletePendingImagesOfBusinessInStorage = async (documentID) => {
+  try {
+    const businessImagesRef = ref(FIREBASE_STORAGE, `pendingImages/${documentID}`);
+    const result = await listAll(businessImagesRef);
+    const deleteRefs = result.items.map(fileRef => deleteObject(fileRef));
+    await Promise.all(deleteRefs);
+  } catch (error) {
+    console.error(error);
+  }
+}

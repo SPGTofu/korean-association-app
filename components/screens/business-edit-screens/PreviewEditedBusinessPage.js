@@ -101,7 +101,9 @@ export default function PreviewEditedBusinessPage() {
                     { tagExists && 
                         <View style = {styles.tagsWrapper}>
                             <Text style = {[styles.tagsText, {color: colors.text}]}>
-                                {editedBusinessData.tags[0]}, {editedBusinessData.tags[1]}, {editedBusinessData.tags[2]}
+                                {editedBusinessData.tags[0].replace(/\s+/g, '') != "" && editedBusinessData.tags[0]} 
+                                {editedBusinessData.tags[1].replace(/\s+/g, '') != "" && ', ' + editedBusinessData.tags[1]} 
+                                {editedBusinessData.tags[2].replace(/\s+/g, '') != "" && ', ' + editedBusinessData.tags[2]}
                             </Text>
                         </View>
                     }

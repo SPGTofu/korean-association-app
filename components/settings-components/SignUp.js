@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react"
 import { useContext } from "react"
 import { SignPageContext } from "../contexts/SignPageContext"
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Keyboard, ActivityIndicator, TouchableWithoutFeedback } from "react-native"
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Keyboard, ActivityIndicator, TouchableWithoutFeedback, ScrollView } from "react-native"
 import { useTheme } from "@react-navigation/native"
 import { doCreateUserWithEmailAndPassword } from "../auth"
 import { handleCreateToast } from "./Toast"
@@ -86,7 +86,7 @@ export default function SignUp({ navigation }) {
 
     return (
         <TouchableWithoutFeedback onPress = {() => Keyboard.dismiss()}>
-            <View style = {styles.container}>
+            <ScrollView contentContainerStyle = {styles.container}>
                 <TextInput 
                     placeholder = 'First and Last Name'
                     ref = {userNameRef}
@@ -128,7 +128,7 @@ export default function SignUp({ navigation }) {
                 </TouchableOpacity>
                 { loading && <ActivityIndicator size = 'small' color = {colors.text} /> }
                 <Toast />
-            </View>
+            </ScrollView>
         </TouchableWithoutFeedback>
     )
 };

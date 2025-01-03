@@ -1,6 +1,6 @@
 import { FIREBASE_DB, FIREBASE_STORAGE } from "../FirebaseConfig";
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query, setDoc, where } from "firebase/firestore";
-import { deleteFolderInBusinessEditImages, deletePublishedImagesOfBusinessInStorage, movePendingImageToPublishedImage, removePublishedImageIfNotInURLArray, returnArrayOfImageNamesInOrderGiven, returnArrayOfImagesNotInPublishedImageOfBusiness, uploadBusinessEditImage, uploadPendingImageToStorage, uploadPublishedImageToStorage, uploadingPublishedImageToStorage } from "./storagecalls";
+import { deleteFolderInBusinessEditImages, deletePendingImagesOfBusinessInStorage, deletePublishedImagesOfBusinessInStorage, movePendingImageToPublishedImage, removePublishedImageIfNotInURLArray, returnArrayOfImageNamesInOrderGiven, returnArrayOfImagesNotInPublishedImageOfBusiness, uploadBusinessEditImage, uploadPendingImageToStorage, uploadPublishedImageToStorage, uploadingPublishedImageToStorage } from "./storagecalls";
 import { getBlob, ref } from "firebase/storage";
 
 /* create a document with the business' 
@@ -53,7 +53,6 @@ export const createBusinessRequest = async (businessData, user) => {
             email: "",
             userName: "",
         }
-        console.log('check1');
         // set submitter: 
         const submitter = {
             userName: await getUserNameFromDatabase(user),
@@ -64,7 +63,6 @@ export const createBusinessRequest = async (businessData, user) => {
         if (businessData.isOwner) {
             publisher = submitter;
         };
-        console.log('check2');
 
         // upload each image to storage
         for (let i = 0; i < businessData.imageUriArray.length; i++) {
@@ -82,10 +80,8 @@ export const createBusinessRequest = async (businessData, user) => {
             }
             arrayOfPhotoNames.push(imageNameString);
         };
-        console.log('check3');
 
         // add business to pending businesses
-        console.log('setting');
         await setDoc(docRef, {
             name: businessData.businessName,
             description: businessData.businessDescription,
@@ -99,7 +95,8 @@ export const createBusinessRequest = async (businessData, user) => {
             hours: businessData.hours,
             hoursDescription: businessData.hoursDescription,
             submitter: submitter,
-            publisher: publisher
+            publisher: publisher,
+            type: businessData.type
         });
         console.log('done: ', docID);
     }
@@ -154,6 +151,7 @@ export const subscribeToPendingBusinesses = (setArrayOfPendingBusinesses) => {
                         yelpInfo: doc.data().yelpInfo,
                         hours: doc.data().hours,
                         hoursDescription: doc.data().hoursDescription,
+                        type: doc.data().type,
                         docID: doc.id 
                     });
                 });
@@ -170,7 +168,6 @@ export const subscribeToPendingBusinesses = (setArrayOfPendingBusinesses) => {
 // update business with edits made
 export const updatePublishedBusinessDataWithEdits = async (businessData) => {
     try {
-        console.log('images in 173 dbCalls: ', businessData.photos);
         // checks if any current images were removed from the edited business
         await removePublishedImageIfNotInURLArray(businessData.photos, businessData.docID);
 
@@ -196,6 +193,7 @@ export const updatePublishedBusinessDataWithEdits = async (businessData) => {
             address: businessData.address,
             publisher: businessData.publisher,
             photos: [...arrayOfImageNames],
+            type: businessData.type,
             docID: businessData.docID
         })
         console.log('doc edit successful');
@@ -224,6 +222,7 @@ export const sendBusinessDataToDatabase = async (businessData) => {
             address: businessData.address,
             publisher: businessData.publisher,
             photos: businessData.photoNames,
+            type: businessData.type,
             docID: businessData.docID
         });
         console.log('doc addition successful');
@@ -377,5 +376,16 @@ export const removeBusinessEditRequestByID = async (requestID) => {
 
     } catch (error) {
         console.error(error);
+    }
+}
+
+// remove new business request by its ID
+export const removeBusinessRequestByID = async (businessID) => {
+    try {
+        const businessRequestRef = doc(FIREBASE_DB, "businessRequests", businessID);
+        await deleteDoc(businessRequestRef);
+        await deletePendingImagesOfBusinessInStorage(businessID);
+    } catch (error) {
+        console.error('Error removing business request: ', error);
     }
 }

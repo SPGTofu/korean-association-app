@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, TouchableWithoutFeedback, Keyboard, ActivityIndicator, ScrollView } from 'react-native';
 import { SignPageContext } from '../contexts/SignPageContext';
 import { useTheme } from '@react-navigation/native';
 import { doSignInWithEmailAndPassword } from '../auth';
@@ -40,7 +40,7 @@ export default function Login({ handleCreateToast, navigation }) {
 
     return (
         <TouchableWithoutFeedback onPress = {() => Keyboard.dismiss()}>
-            <View style = {styles.container}>
+            <ScrollView contentContainerStyle = {styles.container}>
                 <TextInput 
                     placeholder = 'Email'
                     placeholderTextColor = {colors.text}
@@ -65,7 +65,7 @@ export default function Login({ handleCreateToast, navigation }) {
                 </TouchableOpacity>
                 {loading && <ActivityIndicator size = 'small' color = {colors.text} />}
                 <Toast />
-            </View>
+            </ScrollView>
         </TouchableWithoutFeedback>
     );
 };

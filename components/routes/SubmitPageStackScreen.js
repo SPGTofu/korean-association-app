@@ -2,13 +2,12 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import {SubmitPageStackScreenContext} from "../contexts/SubmitPageStackScreenContext";
 import { useContext, useState } from "react";
-import SubmitPage from "../screens/SubmitPage";
+import SubmitPage from "../screens/business-submission-screens/SubmitPage";
 import { UserContext } from "../contexts/UserContext"
 import { Button, Keyboard } from "react-native";
-import SubmitHoursScreen from "../screens/SubmitHoursScreen";
-import SubmitPhotosScreen from "../screens/SubmitPhotosScreen";
+import SubmitHoursScreen from "../screens/business-submission-screens/SubmitHoursScreen";
+import SubmitPhotosScreen from "../screens/business-submission-screens/SubmitPhotosScreen";
 import { handleCreateToast } from "../settings-components/Toast";
-import Toast from "react-native-toast-message";
 import { checkIfBusinessDataFieldsAreMissing, checkIfBusinessHoursAreMissing } from "../settings-components/SubmitPageFunctions";
 import { createBusinessRequest } from "../dbcalls";
 import { SettingStackContext } from "../contexts/SettingStackContext";
@@ -25,6 +24,7 @@ const defaultBusinessData = {
     instagram: "",
     yelp: "",
     facebook: "",
+    type: "",
     hours: [
         {isOpen: false, openTime: ""},
         {isOpen: false, openTime: ""},
@@ -92,7 +92,7 @@ export default function SubmitPageStackScreen({ navigation }) {
             setBusinessData(defaultBusinessData);
             handleCreateToast(
                 'success', 
-                'Reuqest sent. Pending approval', 
+                'Request sent. Pending approval', 
                 'bottom'
             );
             navigation.pop(3);
@@ -110,7 +110,7 @@ export default function SubmitPageStackScreen({ navigation }) {
      <SubmitPageStackScreenContext.Provider value = {submitPageData}>
         <SubmitPageStack.Navigator
             screenOptions = {{
-                headerStyle: { backgroundColor: '#EF5A6F'},
+                headerStyle: { backgroundColor: '#EF5A6F', height: 65},
                 headerTintColor: 'white',
             }}
         >

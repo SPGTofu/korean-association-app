@@ -8,7 +8,9 @@ export const checkIfBusinessDataFieldsAreMissing = (businessData) => {
         { field: businessData.businessAddress,
           message: 'Please provide the business address' },
         { field: businessData.businessDescription,
-          message: 'Please provide the business description' }
+          message: 'Please provide the business description' },
+        { field: businessData.type,
+          message: 'Please provide a business type'}
     ];
 
     const invalidFieldFound = validationObject.find(validation => validation.field === "");

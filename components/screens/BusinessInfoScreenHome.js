@@ -17,18 +17,25 @@ import bookmarkDarkUnsaved from "../../assets/logos/bookmark_dark_unsaved.png"
 import { AntDesign } from "@expo/vector-icons";
 import CopyrightText from "../other-components/CopyrightText";
 import { getPublishedImageFromStorage } from "../storagecalls";
+import { getPublishedBusinessByID } from "../dbcalls";
 
 const screenWidth = Dimensions.get('window').width;
 
 export default function BusinessInfoScreen({ navigation, route }) {
-    const { businessData } = route.params
+    const { businessID } = route.params;
+    const [businessData, setBusinessData] = useState({});
     const { dark, colors } = useTheme();
     const [hoursTabOpen, setHoursTapOpen] = useState(false);
     const [isSaved, setIsSaved ] = useState(false);
     const [images, setImages] = useState([]);
     
-    // get all business images
+    // get all business images and data
     useEffect(() => {
+        const handleGetBusinessData = async () => {
+            const tempData = await getPublishedBusinessByID(businessID);
+            setBusinessData(tempData);
+        }
+
         const handleGetImages = async () => {
             let tempArrayOfimages = [];
             for (const photoName of businessData.photos) {
@@ -37,6 +44,8 @@ export default function BusinessInfoScreen({ navigation, route }) {
             }
             setImages(tempArrayOfimages);
         }
+
+        handleGetBusinessData();
         handleGetImages();
     }, [businessData])
    

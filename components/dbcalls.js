@@ -1,6 +1,6 @@
 import { FIREBASE_DB, FIREBASE_STORAGE } from "../FirebaseConfig";
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query, setDoc, where } from "firebase/firestore";
-import { deleteFolderInBusinessEditImages, deletePendingImagesOfBusinessInStorage, deletePublishedImagesOfBusinessInStorage, movePendingImageToPublishedImage, removePublishedImageIfNotInURLArray, returnArrayOfImageNamesInOrderGiven, returnArrayOfImagesNotInPublishedImageOfBusiness, uploadBusinessEditImage, uploadPendingImageToStorage, uploadPublishedImageToStorage, uploadingPublishedImageToStorage } from "./storagecalls";
+import { deleteFolderInBusinessEditImages, deletePendingImagesOfBusinessInStorage, deletePublishedImagesOfBusinessInStorage, getPublishedImageFromStorage, movePendingImageToPublishedImage, removePublishedImageIfNotInURLArray, returnArrayOfImageNamesInOrderGiven, returnArrayOfImagesNotInPublishedImageOfBusiness, uploadBusinessEditImage, uploadPendingImageToStorage, uploadPublishedImageToStorage, uploadingPublishedImageToStorage } from "./storagecalls";
 import { getBlob, ref } from "firebase/storage";
 
 /* create a document with the business' 
@@ -387,5 +387,27 @@ export const removeBusinessRequestByID = async (businessID) => {
         await deletePendingImagesOfBusinessInStorage(businessID);
     } catch (error) {
         console.error('Error removing business request: ', error);
+    }
+}
+
+// returns array of businesses based on their business type
+export const getPublishedBusinessesByType = async (type) => {
+    try {
+        const returnArray = [];
+        const databaseCollectionRef = collection(FIREBASE_DB, 'database');
+        const businessesQuery = query(databaseCollectionRef, where('type', '==', type));
+        const snapshot = await getDocs(businessesQuery);
+        for (const doc of snapshot.docs) {
+            const firstImage = await getPublishedImageFromStorage(doc.data().docID, doc.data().photos[0]);
+            returnArray.push({
+                name: doc.data().name,
+                firstImage: firstImage,
+                docID: doc.data().docID
+            })
+        };
+        return returnArray;
+    } catch (error) {
+        console.error('Error geting businesses by type: ', error);
+        return [];
     }
 }

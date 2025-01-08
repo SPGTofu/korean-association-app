@@ -20,8 +20,8 @@ export const FIREBASE_DB = getFirestore(FIREBASE_APP);
 export const FIREBASE_STORAGE = getStorage();
 
 // Emulator setup
-if (__DEV__) {
-  connectAuthEmulator(FIREBASE_AUTH, "http://localhost:9099");
-  connectFirestoreEmulator(FIREBASE_DB, "127.0.0.1", 8081);
-  connectStorageEmulator(FIREBASE_STORAGE, "127.0.0.1", 9199);
-}
+// if (__DEV__) {
+//   connectAuthEmulator(FIREBASE_AUTH, "http://localhost:9099");
+//   connectFirestoreEmulator(FIREBASE_DB, "127.0.0.1", 8081);
+//   connectStorageEmulator(FIREBASE_STORAGE, "127.0.0.1", 9199);
+// }

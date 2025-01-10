@@ -12,7 +12,15 @@ export default function BusinessContainer({ businessData }) {
                     source = {{uri: businessData?.firstImage || null}}
                     style = {styles.image}
                 />
-                <Text style = {styles.infoText}>{businessData?.name || 'Business Name'}</Text>
+                <View style = {styles.textWrapper}>
+                    <Text 
+                        style = {styles.infoText}
+                        numberOfLines = {1}
+                        adjustsFontSizeToFit
+                    >
+                        {businessData?.name || 'Business Name'}
+                    </Text>
+                </View>
             </View>
         </TouchableOpacity>
     )
@@ -21,26 +29,34 @@ export default function BusinessContainer({ businessData }) {
 const styles = StyleSheet.create({
     image: {
         height: 250,
-        width: 300,
+        width: 340,
         resizeMode: 'cover',
         borderTopLeftRadius: 10,
-        borderTopRightRadius: 10
+        borderTopRightRadius: 10,
+        borderBottomWidth: 1
     },
     container: {
         height : 280,
-        width : 300,
+        width : 340,
         backgroundColor: '#f0f0f0',
         borderRadius: 10,
         margin: 4,
         marginTop: 8,
         borderWidth: 1,
         overflow: 'hidden',
-        justifyContent: 'top',
-        alignItems: 'center'
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     infoText: {
         fontSize: 16,
         color: '#333',
-        fontWeight: 500
+        fontWeight: 500,
+        margin: 4
+    },
+    textWrapper: {
+        height: 30,
+        width: 340,
+        justifyContent: 'center',
+        alignItems: 'center',
     }
 });

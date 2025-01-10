@@ -17,37 +17,36 @@ import bookmarkDarkUnsaved from "../../assets/logos/bookmark_dark_unsaved.png"
 import { AntDesign } from "@expo/vector-icons";
 import CopyrightText from "../other-components/CopyrightText";
 import { getPublishedImageFromStorage } from "../storagecalls";
-import { getPublishedBusinessByID } from "../dbcalls";
+import { UserContext } from "../contexts/UserContext";
+import { addBusinessIDToSavedList, checkIfUserHasBusinessInSaved, getPublishedBusinessByID, removeBusinessIDFromSavedList } from "../dbcalls";
 
 const screenWidth = Dimensions.get('window').width;
 
 export default function BusinessInfoScreen({ navigation, route }) {
+    const { user } = useContext(UserContext);
     const { businessID } = route.params;
     const [businessData, setBusinessData] = useState({});
     const { dark, colors } = useTheme();
     const [hoursTabOpen, setHoursTapOpen] = useState(false);
     const [isSaved, setIsSaved ] = useState(false);
-    const [images, setImages] = useState([]);
     
-    // get all business images and data
+    // get all business images, data, and check if user saved business
     useEffect(() => {
+        console.log('using effect in business info home screen');
         const handleGetBusinessData = async () => {
             const tempData = await getPublishedBusinessByID(businessID);
             setBusinessData(tempData);
         }
 
-        const handleGetImages = async () => {
-            let tempArrayOfimages = [];
-            for (const photoName of businessData.photos) {
-                const image = await getPublishedImageFromStorage(businessData.docID, photoName);
-                tempArrayOfimages.push(image);
-            }
-            setImages(tempArrayOfimages);
+        const handleCheckIfBusinessIsSaved = async () => {
+            const saved = await checkIfUserHasBusinessInSaved(user, businessID);
+            console.log('saved: ', saved);
+            setIsSaved(saved);
         }
 
         handleGetBusinessData();
-        handleGetImages();
-    }, [businessData])
+        handleCheckIfBusinessIsSaved();
+    }, [businessID])
    
     // used to check if tags should be displayed
    let tagExists = false;
@@ -109,13 +108,30 @@ export default function BusinessInfoScreen({ navigation, route }) {
         navigation.navigate("SubmitBusinessEdit", {business: businessProp})
     }
 
+    // changes the current saved and saves the business if needed
+    const handleSaveIsPressed = async () => {
+        try {
+            console.log('triggering: ', businessID);
+            // add businessID to saved in database if saving. Remove is unsaving.
+            if (isSaved == false) {
+                await addBusinessIDToSavedList(user, businessID);
+            } else {
+                await removeBusinessIDFromSavedList(user, businessID);
+            }
+            setIsSaved((prevState) => !prevState);
+        } catch (error) {
+            console.error('error handling save: ', error);
+        }
+    }
+    useEffect(() => console.log('isSaved: ', isSaved), [isSaved])
+
     return (
         <ScrollView contentContainerStyle = {styles.container}>
             <View style = {{height: 240}}>
                 <FlatList
                     horizontal
                     showsHorizontalScrollIndicator = {false}
-                    data = {images}
+                    data = {businessData.photos}
                     style = {styles.photoArray}
                     keyExtractor = {(index) => index}
                     renderItem = {({ item }) => {
@@ -168,12 +184,16 @@ export default function BusinessInfoScreen({ navigation, route }) {
                             Visit Website
                         </Text>
                     </Pressable>
-                    <Image 
-                        source = {isSaved? bookmarkSaved 
-                                    : (dark ? bookmarkDarkUnsaved : bookmarkLightUnsaved)
-                                }
-                        style = {[styles.logoLarge, {marginLeft: '-8'}]}
-                    />
+                    <TouchableOpacity 
+                        onPress = {() => handleSaveIsPressed()}
+                    >
+                        <Image 
+                            source = {isSaved? bookmarkSaved 
+                                        : (dark ? bookmarkDarkUnsaved : bookmarkLightUnsaved)
+                                    }
+                            style = {[styles.logoLarge, {marginLeft: '-8'}]}
+                        />
+                    </TouchableOpacity>
                 </View>
                 <View style = {styles.flexBox2Wrapper}>
                     <TouchableOpacity onPress = {() => handleWebsiteClicked(businessData.instagramInfo, 'Instagram')}>

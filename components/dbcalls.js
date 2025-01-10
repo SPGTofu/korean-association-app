@@ -1,5 +1,5 @@
 import { FIREBASE_DB, FIREBASE_STORAGE } from "../FirebaseConfig";
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query, setDoc, where } from "firebase/firestore";
+import { addDoc, arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query, setDoc, where } from "firebase/firestore";
 import { deleteFolderInBusinessEditImages, deletePendingImagesOfBusinessInStorage, deletePublishedImagesOfBusinessInStorage, getPublishedImageFromStorage, movePendingImageToPublishedImage, removePublishedImageIfNotInURLArray, returnArrayOfImageNamesInOrderGiven, returnArrayOfImagesNotInPublishedImageOfBusiness, uploadBusinessEditImage, uploadPendingImageToStorage, uploadPublishedImageToStorage, uploadingPublishedImageToStorage } from "./storagecalls";
 import { getBlob, ref } from "firebase/storage";
 
@@ -259,7 +259,19 @@ export const getPublishedBusinessByID = async (documentID) => {
         const snapshot = await getDoc(docRef);
     
         if (snapshot.exists()) {
-            return {...snapshot.data(), docID: documentID};
+            // retrive images
+            const photos = await Promise.all(
+                snapshot.data().photos.map((photoName) => 
+                    getPublishedImageFromStorage(documentID, photoName)
+                )
+            );
+
+            return {
+                ...snapshot.data(), 
+                docID: documentID,
+                photos: photos
+            };
+
         } else {
             console.error('document not found');
             return null;
@@ -280,15 +292,11 @@ export const getSavedBusinessesOfUser = async (user) => {
         
         // checks if user even exists
         if (userDoc.exists()) {
-            const userDocSaved = userDoc.data().saved;
-            if (userDocSaved == []) {
-                return userDocSaved;
-            }
-            let arrayOfSavedBusinesses = [];
-            for (const business of userDocSaved) {
-                const businessData = await getPublishedBusinessByID(business);
-                arrayOfSavedBusinesses.push(businessData);
-            }
+            let arrayOfSavedBusinesses = await Promise.all(
+                userDoc.data().saved.map((business) => 
+                    getPublishedBusinessByID(business)
+                )
+            );
             return arrayOfSavedBusinesses;
         } else {
             console.error('saved: userDoc does not exist');
@@ -409,5 +417,46 @@ export const getPublishedBusinessesByType = async (type) => {
     } catch (error) {
         console.error('Error geting businesses by type: ', error);
         return [];
+    }
+}
+
+// Check if user has the business saved
+export const checkIfUserHasBusinessInSaved = async (user, businessID) => {
+    try {
+        const userDocRef = doc(FIREBASE_DB, 'users', user.uid);
+        const userDoc = await getDoc(userDocRef);
+        const saved = userDoc.data().saved;
+        return saved.includes(businessID);
+    } catch (error) {
+        console.error('error checking if business is saved: ', error);
+        return false;
+    }
+}
+
+// Add business to saved
+export const addBusinessIDToSavedList = async (user, businessID) => {
+    try {
+        console.log('adding: ', businessID);
+        const userDocRef = doc(FIREBASE_DB, 'users', user.uid);
+        setDoc(userDocRef,
+            {saved: arrayUnion(businessID)},
+            {merge: true}
+        );
+    } catch (error) {
+        console.error('error adding business to saved: ', error);
+    }
+}
+
+// Remove business from saved
+export const removeBusinessIDFromSavedList = async (user, businessID) => {
+    try {
+        console.log('removing: ', businessID);
+        const userDocRef = doc(FIREBASE_DB, 'users', user.uid);
+        setDoc(userDocRef,
+            {saved: arrayRemove(businessID)},
+            {merge: true}
+        );
+    } catch (error) {
+        console.error('error removing business from saved: ', error);
     }
 }

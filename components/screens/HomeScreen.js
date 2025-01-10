@@ -12,6 +12,7 @@ import { Services } from '../../assets/business-data/Services';
 import { useTheme } from '@react-navigation/native';
 import CopyrightText from '../other-components/CopyrightText';
 import { getPublishedBusinessesByType } from '../dbcalls';
+import Line from '../other-components/Line';
 
 
 export default function HomeScreen({ navigation }) {
@@ -68,8 +69,16 @@ export default function HomeScreen({ navigation }) {
         <NavigationContext.Provider value = {navigation}>
             <ScrollView contentContainerStyle = {styles.screen}>
                 { categories.map(({ title, data }, index) => (
-                    <View key = { index }>
-                        <Text style = {{color: colors.text, fontSize: 40, margin: 8}}>{ title }</Text>
+                    <View 
+                        key = { index }
+                        style = {styles.scrollContainer}
+                    >
+                        <Text style = {[styles.title, {color: colors.text}]}>{ title }</Text>
+                        <Line 
+                            marginTop = {2} 
+                            marignBottom = {2}
+                            borderWidth = {1}
+                        />
                         <HorizontalScroll businessData = { data }/>
                     </View>
                 ))}
@@ -82,5 +91,14 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
     screen: {
         paddingHorizontal: 4
+    },
+    title: {
+        fontSize: 36,
+        margin: 8,
+        marginBottom: 2,
+        fontWeight: 600
+    },
+    scrollContainer: {
+        marginTop: 12
     }
 })

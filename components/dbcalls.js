@@ -401,18 +401,20 @@ export const removeBusinessRequestByID = async (businessID) => {
 // returns array of businesses based on their business type
 export const getPublishedBusinessesByType = async (type) => {
     try {
-        const returnArray = [];
         const databaseCollectionRef = collection(FIREBASE_DB, 'database');
         const businessesQuery = query(databaseCollectionRef, where('type', '==', type));
         const snapshot = await getDocs(businessesQuery);
-        for (const doc of snapshot.docs) {
-            const firstImage = await getPublishedImageFromStorage(doc.data().docID, doc.data().photos[0]);
-            returnArray.push({
-                name: doc.data().name,
-                firstImage: firstImage,
-                docID: doc.data().docID
+
+        const returnArray = await Promise.all(
+            snapshot.docs.map(async (doc) => {
+                const firstImage = await getPublishedImageFromStorage(doc.data().docID, doc.data().photos[0]);
+                return ({
+                    name: doc.data().name,
+                    firstImage: firstImage,
+                    docID: doc.data().docID    
+                })
             })
-        };
+        )
         return returnArray;
     } catch (error) {
         console.error('Error geting businesses by type: ', error);

@@ -236,7 +236,10 @@ export default function BusinessPage({ businessData, createToastForPage, handleN
 
                 <View style = {{alignItems: 'center'}}>
                     <Text style = {[styles.title, {color: colors.text}]}>
-                        Media (MUST BE WORKING LINKS)
+                        Media
+                    </Text>
+                    <Text style = {{color: colors.text, fontSize: 16}}>
+                        (Make Sure Links Work)
                     </Text>
                 </View>
                 {mappedLinks}
@@ -281,6 +284,10 @@ export default function BusinessPage({ businessData, createToastForPage, handleN
 
                 <View style = {styles.hoursContainer}>
                     <Text style = {[styles.title, {color: colors.text}]}>Hours</Text>
+                    <Text style = {{color: colors.text, fontSize: 14}}>
+                        Have a ',' and a space between each period
+                    </Text>
+
                     {mappedHours}
                     <Text style = {[styles.title, {color: colors.text}]}>
                         Additional Hours Description

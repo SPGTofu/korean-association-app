@@ -36,7 +36,8 @@ export default function SubmitPage() {
                 contentContainerStyle = {styles.container}
             >
                 <Text style = {[styles.header, {color: colors.text}]}>Provide Business Details</Text>
-
+                
+                <Text style = {{color: colors.text, fontSize: 16}}>Business Name</Text>
                 <TextInput
                     style = {[styles.inputBox, {borderColor: colors.text, color: colors.text}]}
                     placeholder = 'Business Name'
@@ -47,9 +48,10 @@ export default function SubmitPage() {
                     }))}
                 />
 
+                <Text style = {{color: colors.text, fontSize: 16}}> Business Phone Number</Text>
                 <TextInput
                     style = {[styles.inputBox, {borderColor: colors.text, color: colors.text}]}
-                    placeholder = 'Business Phone Number'
+                    placeholder = '###-###-####'
                     placeholderTextColor = 'gray'
                     onChangeText = {(text) => setBusinessData((prevData) => ({
                         ...prevData,
@@ -57,9 +59,10 @@ export default function SubmitPage() {
                     }))}                    
                 />
 
+                <Text style = {{color: colors.text, fontSize: 16}}> Business Address</Text>
                 <TextInput
                     style = {[styles.inputBox, {borderColor: colors.text, color: colors.text}]}
-                    placeholder = 'Business Address'
+                    placeholder = '123 E Elm St., Springfield, MO 65810'
                     placeholderTextColor = 'gray'
                     onChangeText = {(text) => setBusinessData((prevData) => ({
                         ...prevData,
@@ -67,9 +70,10 @@ export default function SubmitPage() {
                     }))}                    
                 />
 
+                <Text style = {{color: colors.text, fontSize: 16}}> Business Description</Text>
                 <TextInput
                     style = {[styles.descriptionBox, {borderColor: colors.text, color: colors.text}]}
-                    placeholder = 'Business Description (300 characters)'
+                    placeholder = '300 characters'
                     placeholderTextColor = 'gray'
                     onChangeText = {(text) => setBusinessData((prevData) => ({
                         ...prevData,
@@ -94,7 +98,7 @@ export default function SubmitPage() {
                         style = {{ width: '80%', margin: 8, backgroundColor: '#f4f4f4'}}
                         contentContainerStyle = {{justifyContent: 'center', alignItems: 'center'}}
                         dropDownContainerStyle = {{backgroundColor: '#f4f4f4', width: '82%'}}
-                        labelStyle = {{color: colors.text}}
+                        labelStyle = {{color: 'black'}}
                     />
                 </View>
                 

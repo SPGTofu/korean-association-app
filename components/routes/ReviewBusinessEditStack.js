@@ -8,10 +8,12 @@ import PreviewEditedBusinessPage from "../screens/business-edit-screens/PreviewE
 import { Button } from "react-native";
 import { removeBusinessEditRequestByID, updatePublishedBusinessDataWithEdits } from "../dbcalls";
 import { SettingStackContext } from "../contexts/SettingStackContext";
+import { useTheme } from "@react-navigation/native";
 
 const BusinessEditStack = createStackNavigator();
 
 export default function ReviewBusinessEditStack({ navigation }) {
+    const { dark, colors } = useTheme();
     const [editedBusinessData, setEditedBusinessData] = useState(null);
     const editedBusinessDataContext = {editedBusinessData, setEditedBusinessData};
     const { createToastOnSettingStack } = useContext(SettingStackContext);
@@ -30,9 +32,12 @@ export default function ReviewBusinessEditStack({ navigation }) {
     return (
         <EditBusinessStackContext.Provider value = {editedBusinessDataContext}>
             <BusinessEditStack.Navigator
-                screenOptions = {{
-                    headerStyle: { backgroundColor: '#EF5A6F'},
-                    headerTintColor: 'white',
+              screenOptions = {{
+                headerStyle: { 
+                    backgroundColor: dark ? '#121212' : 'white', 
+                    height: 65
+                },
+                headerTintColor: dark ? 'white' : 'black',
                 }}
             >
                 <BusinessEditStack.Screen
@@ -58,7 +63,7 @@ export default function ReviewBusinessEditStack({ navigation }) {
                         headerRight: () => (
                             <Button 
                                 title = 'Submit'
-                                color = 'white'
+                                color = {dark ? 'black' : 'white'}
                                 onPress = {() => handleSubmission()}
                             />
                         )

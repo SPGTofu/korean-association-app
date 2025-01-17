@@ -11,6 +11,7 @@ import { handleCreateToast } from "../settings-components/Toast";
 import { checkIfBusinessDataFieldsAreMissing, checkIfBusinessHoursAreMissing } from "../settings-components/SubmitPageFunctions";
 import { createBusinessRequest } from "../dbcalls";
 import { SettingStackContext } from "../contexts/SettingStackContext";
+import { useTheme } from "@react-navigation/native";
 
 const SubmitPageStack = createStackNavigator();
 
@@ -40,6 +41,7 @@ const defaultBusinessData = {
 }
 
 export default function SubmitPageStackScreen({ navigation }) {
+    const { dark, colors } = useTheme();
     const { user } = useContext(UserContext);
     const [businessData, setBusinessData] = useState(defaultBusinessData);
     const submitPageData = { businessData, setBusinessData };
@@ -110,8 +112,11 @@ export default function SubmitPageStackScreen({ navigation }) {
      <SubmitPageStackScreenContext.Provider value = {submitPageData}>
         <SubmitPageStack.Navigator
             screenOptions = {{
-                headerStyle: { backgroundColor: '#EF5A6F', height: 65},
-                headerTintColor: 'white',
+                headerStyle: { 
+                    backgroundColor: dark ? '#121212' : 'white',
+                    height: 65
+                },
+                headerTintColor: dark ? 'white' : 'black',
             }}
         >
             <SubmitPageStack.Screen 
@@ -122,7 +127,7 @@ export default function SubmitPageStackScreen({ navigation }) {
                     headerRight: () => (
                         <Button
                             title = "Next"
-                            color = 'white'
+                            color = {dark ? "white" : "black"}
                             onPress = {() => handleNavigateToBusinessHours()}
                         />
                     )
@@ -137,7 +142,7 @@ export default function SubmitPageStackScreen({ navigation }) {
                     headerRight: () => (
                         <Button 
                             title = "Next"
-                            color = "white"
+                            color = {dark ? "white" : "black"}
                             onPress = {() => handleSubmitHours()}
 
                         />
@@ -152,7 +157,7 @@ export default function SubmitPageStackScreen({ navigation }) {
                     headerRight: () => (
                         <Button 
                             title = "Submit"
-                            color = 'white'
+                            color = {dark ? "white" : "black"}
                             onPress = {() => handleSubmitBusiness()}
                         />
                     )

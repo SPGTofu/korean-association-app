@@ -69,18 +69,20 @@ export default function HomeScreen({ navigation }) {
         <NavigationContext.Provider value = {navigation}>
             <ScrollView contentContainerStyle = {styles.screen}>
                 { categories.map(({ title, data }, index) => (
-                    <View 
-                        key = { index }
-                        style = {styles.scrollContainer}
-                    >
-                        <Text style = {[styles.title, {color: colors.text}]}>{ title }</Text>
-                        <Line 
-                            marginTop = {2} 
-                            marignBottom = {2}
-                            borderWidth = {1}
-                        />
-                        <HorizontalScroll businessData = { data }/>
-                    </View>
+                    data && data.length > 0 && (
+                        <View 
+                            key = { index }
+                            style = {styles.scrollContainer}
+                        >
+                            <Text style = {[styles.title, {color: colors.text}]}>{ title }</Text>
+                            <Line 
+                                marginTop = {2} 
+                                marignBottom = {2}
+                                borderWidth = {1}
+                            />
+                            <HorizontalScroll businessData = { data }/>
+                        </View>
+                    ) 
                 ))}
                 <CopyrightText />
             </ScrollView>

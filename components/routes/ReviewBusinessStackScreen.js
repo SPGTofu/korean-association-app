@@ -8,10 +8,12 @@ import { ReviewBusinessStackScreenContext } from "../contexts/ReviewBusinessStac
 import Toast from "react-native-toast-message";
 import { sendBusinessDataToDatabase } from "../dbcalls";
 import { handleCreateToast } from "../settings-components/Toast";
+import { useTheme } from "@react-navigation/native";
 
 const ReviewBusinessPageStack = createStackNavigator();
 
 export default function ReviewBusinessStackScreen({ navigation }) {
+    const { dark, colors } = useTheme();
     const [publishingBusinessData, setPublishingBusinsesData] = useState(null);
 
     const handleSetPublishingbusinessData = (data) => {
@@ -31,8 +33,11 @@ export default function ReviewBusinessStackScreen({ navigation }) {
         <ReviewBusinessStackScreenContext.Provider value = {businessDataContext}>
             <ReviewBusinessPageStack.Navigator
                 screenOptions = {{
-                    headerStyle: { backgroundColor: '#EF5A6F' },
-                    headerTintColor: 'white',
+                    headerStyle: { 
+                        backgroundColor: dark ? '#121212' : 'white', 
+                        height: 65
+                    },
+                    headerTintColor: dark ? 'white' : 'black',
                 }}
             >
                 <ReviewBusinessPageStack.Screen 
@@ -57,7 +62,7 @@ export default function ReviewBusinessStackScreen({ navigation }) {
                         headerRight: () => (
                             <Button 
                                 title = 'Submit'
-                                color = 'white'
+                                color = {dark ? 'white' : 'black'}
                                 onPress = {() => handleSubmission()}
                             />
                         )

@@ -54,7 +54,7 @@ export default function Saved({ navigation }) {
                     )
                 })
 
-                : <Text style = {styles.noBusinessText}>
+                : <Text style = {[styles.noBusinessText, {color: colors.text}]}>
                     You have no businesses saved. Try saving one!
                   </Text>
             }
@@ -73,7 +73,8 @@ const styles = StyleSheet.create({
         fontSize: 20,
         textAlign: 'center',
         margin: 4,
-        fontWeight: '400'
+        fontWeight: '400',
+        marginHorizontal: 20
     },
     container: {
         justifyContent: 'center',

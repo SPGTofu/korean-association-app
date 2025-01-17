@@ -29,7 +29,7 @@ export default function BusinessInfoScreen({ navigation, route }) {
     const { dark, colors } = useTheme();
     const [hoursTabOpen, setHoursTapOpen] = useState(false);
     const [isSaved, setIsSaved ] = useState(false);
-    
+
     // get all business images, data, and check if user saved business
     useEffect(() => {
         console.log('using effect in business info home screen');
@@ -40,7 +40,6 @@ export default function BusinessInfoScreen({ navigation, route }) {
 
         const handleCheckIfBusinessIsSaved = async () => {
             const saved = await checkIfUserHasBusinessInSaved(user, businessID);
-            console.log('saved: ', saved);
             setIsSaved(saved);
         }
 
@@ -111,7 +110,6 @@ export default function BusinessInfoScreen({ navigation, route }) {
     // changes the current saved and saves the business if needed
     const handleSaveIsPressed = async () => {
         try {
-            console.log('triggering: ', businessID);
             // add businessID to saved in database if saving. Remove is unsaving.
             if (isSaved == false) {
                 await addBusinessIDToSavedList(user, businessID);
@@ -123,7 +121,6 @@ export default function BusinessInfoScreen({ navigation, route }) {
             console.error('error handling save: ', error);
         }
     }
-    useEffect(() => console.log('isSaved: ', isSaved), [isSaved])
 
     return (
         <ScrollView contentContainerStyle = {styles.container}>
@@ -219,7 +216,7 @@ export default function BusinessInfoScreen({ navigation, route }) {
 
             <View>
                 <Text
-                    style = {[styles.linkText, {color: colors.text}]}
+                    style = {[styles.linkText, {color: colors.text, lineHeight: 28}]}
                 >
                     {businessData.description}
                 </Text>
@@ -254,16 +251,27 @@ export default function BusinessInfoScreen({ navigation, route }) {
                                 <View 
                                     style = {[
                                         styles.standardWrapper, 
-                                        {flexDirection: 'row', alignItems: 'flex-start', margin: 4}
+                                        { flexDirection: 'row', 
+                                          alignItems: 'flex-start', 
+                                          margin: 4, 
+                                        }
                                     ]} 
                                     key = {weekdays[index]}
                                 >
                                     <Text style = {[styles.weekdayText, {color: colors.text}]}>{weekdays[index]}</Text>
                                     <View style = {styles.hoursTextWrapper}> 
-                                        { hour.isOpen? (
-                                            <Text style = {[styles.hoursText, {color: colors.text}]}>
-                                                {hour.openTime}
-                                            </Text> 
+                                        { 
+                                            hour.isOpen? (
+                                                hour.openTime.split(', ').map((time, index) => {
+                                                    return (
+                                                        <Text 
+                                                            key = {index}
+                                                            style = {[styles.hoursText, {color: colors.text}]}
+                                                        >
+                                                            {time}
+                                                        </Text>
+                                                    )
+                                                })
                                             ) :
                                             <Text style = {[styles.hoursText, {color: colors.text}]}>
                                                 Closed

@@ -13,10 +13,12 @@ import ReviewBusinessStackScreen from "./ReviewBusinessStackScreen";
 import SubmitBusinessEdit from "../screens/SubmitBusinessEdit";
 import ReviewBusinessEditStack from "./ReviewBusinessEditStack";
 import { KeyboardAvoidingView, Platform } from "react-native";
+import { useTheme } from "@react-navigation/native";
 
 const SettingsStack = createStackNavigator();
 
 export default function SettingStackScreen() {
+    const { dark, colors } = useTheme();
     const [signPage, setSignPage] = useState('Login');
     
     const createToastOnSettingStack = (type, message, location) => {
@@ -36,9 +38,12 @@ export default function SettingStackScreen() {
                 <SignPageContext.Provider value = {signPageData}>
                     <SettingsStack.Navigator    
                         screenOptions = {{
-                            headerStyle: { backgroundColor: '#EF5A6F', height: 65 },
-                            headerTintColor: 'white',
-                            }}
+                            headerStyle: { 
+                                backgroundColor: dark ? '#121212' : 'white',
+                                height: 65 
+                            },
+                            headerTintColor: dark ? 'white' : 'black',
+                        }}
                     >
                         <SettingsStack.Screen 
                             name = "SettingsScreen" 

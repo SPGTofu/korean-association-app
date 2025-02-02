@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "417-korea",
-    "slug": "417-korea",
+    "name": "417 Korea",
+    "slug": "417Korea",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -33,7 +33,8 @@
         "photosPermission": "The app accesses your photos to upload online."
       },
       [
-          "react-native-radar", {
+        "react-native-radar",
+        {
           "iosFraud": true,
           "iosNSLocationWhenInUseUsageDescription": "Your location permission prompt",
           "iosNSLocationAlwaysAndWhenInUseUsageDescription": "Your location permission prompt",
@@ -41,10 +42,17 @@
           "androidFraud": true,
           "androidBackgroundPermission": true,
           "androidFineLocationPermission": true,
-          "addRadarSDKMotion":true
+          "addRadarSDKMotion": true
         }
       ],
-      ["@maplibre/maplibre-react-native"]
-    ]
+      [
+        "@maplibre/maplibre-react-native"
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "479f78f7-3230-48a5-bfc0-f294dfb3fe8b"
+      }
+    }
   }
 }

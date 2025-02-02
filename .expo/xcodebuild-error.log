@@ -1,0 +1,6 @@
+2025-02-02 01:00:04.057 xcodebuild[76588:1577710] Writing error result bundle to /var/folders/j3/t5f0m3rs03s3syhm9rnz7y200000gn/T/ResultBundle_2025-02-02_01-00-0004.xcresult
+xcodebuild: error: Unable to find a destination matching the provided destination specifier:
+		{ id:5CC55C24-7E8E-4FD1-88CB-3A75B18D2A80 }
+
+	Ineligible destinations for the "koreanassociationapp" scheme:
+		{ platform:iOS, id:dvtdevice-DVTiPhonePlaceholder-iphoneos:placeholder, name:Any iOS Device, error:iOS 18.2 is not installed. To use with Xcode, first download and install the platform }

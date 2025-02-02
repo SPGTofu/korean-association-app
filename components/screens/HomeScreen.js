@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import HorizontalScroll from '../horizontal-scroll/HorizontalScroll';
-import { Eateries } from '../../assets/business-data/Eateries';
 import { NavigationContext } from '../contexts/NavigationContext';
-import { Clinics } from '../../assets/business-data/Clinics';
-import { Markets } from '../../assets/business-data/Markets';
-import { RealEstateFinance } from '../../assets/business-data/RealEstateFinance';
-import { ReligiousInstitutions } from '../../assets/business-data/ReligiousInstitutions';
-import { Salons } from '../../assets/business-data/Salons';
-import { Services } from '../../assets/business-data/Services';
 import { useTheme } from '@react-navigation/native';
 import CopyrightText from '../other-components/CopyrightText';
 import { getPublishedBusinessesByType } from '../dbcalls';

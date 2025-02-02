@@ -75,7 +75,7 @@ export const createBusinessRequest = async (businessData, user) => {
                     businessData.imageUriArray[i].uri
                 );
             } catch(error) {
-                console.error(error);
+                console.error('dbcall78: ', error);
                 return error;
             }
             arrayOfPhotoNames.push(imageNameString);
@@ -199,7 +199,7 @@ export const updatePublishedBusinessDataWithEdits = async (businessData) => {
         console.log('doc edit successful');
         
     } catch (error) {
-        console.error(error);
+        console.error('dbcall 202: ', error);
     }
 }
 
@@ -246,7 +246,7 @@ export const sendBusinessDataToDatabase = async (businessData) => {
             await movePendingImageToPublishedImage(imageFilePath, imageNameString);
         }
     } catch(error) {
-        console.error(error);
+        console.error('dbcall 249: ', error);
         return null;
     }
 }
@@ -277,7 +277,7 @@ export const getPublishedBusinessByID = async (documentID) => {
             return null;
         }
     } catch (error) {
-        console.error(error);
+        console.error('dbcall280: ', error);
         return null;
     }
 }
@@ -303,7 +303,7 @@ export const getSavedBusinessesOfUser = async (user) => {
             return [];
         }
     } catch (error) {
-        console.error(error);
+        console.error('dbcall306: ', error);
         return [];
     }    
 }
@@ -342,7 +342,7 @@ export const createBusinessEditRequest = async (business, inputData, user) => {
         });
 
     } catch (error) {
-        console.error(error);
+        console.error('dbcall345: ', error);
     }
 }
 
@@ -360,7 +360,7 @@ export const getBusinessEditRequests = async () => {
 
         return editRequests;
     } catch (error) {
-        console.error(error);
+        console.error('dbcall363: ', error);
     }
 }
 
@@ -371,7 +371,7 @@ export const getBusinessNameFromDatabaseUsingID = async (businessID) => {
         const businessDoc = await getDoc(businessRef);
         return businessDoc.data().name;
     } catch (error) {
-        console.error(error);
+        console.error('dbcall374: ', error);
     }
 }
 
@@ -383,7 +383,7 @@ export const removeBusinessEditRequestByID = async (requestID) => {
         await deleteFolderInBusinessEditImages(requestID);
 
     } catch (error) {
-        console.error(error);
+        console.error('dbcall396: ', error);
     }
 }
 

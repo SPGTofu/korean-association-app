@@ -83,7 +83,7 @@ export default function BusinessInfoScreen({ navigation, route }) {
 
         let website;
         console.log(link.substring(0,7));
-        if (link.substring(0,8) === 'https://') {
+        if (link?.substring(0,8) === 'https://') {
             website = link;
         } else {
             website = 'https://' + link;

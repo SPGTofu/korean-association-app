@@ -1,0 +1,6 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -workspace /Users/realjp/Desktop/my-projects/417-Korea/ios/koreanassociationapp.xcworkspace -configuration Debug -scheme koreanassociationapp -destination id=5CC55C24-7E8E-4FD1-88CB-3A75B18D2A80
+
+User defaults from command line:
+    IDEPackageSupportUseBuiltinSCM = YES
+

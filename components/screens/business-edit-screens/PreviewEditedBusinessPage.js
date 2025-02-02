@@ -61,7 +61,7 @@ export default function PreviewEditedBusinessPage() {
         }
 
         let website;
-        if (link.substring(0,8) === 'https://') {
+        if (link?.substring(0,8) === 'https://') {
             website = link;
         } else {
             website = 'https://' + link;

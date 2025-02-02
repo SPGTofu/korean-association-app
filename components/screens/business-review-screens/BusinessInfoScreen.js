@@ -65,8 +65,7 @@ export default function BusinessInfoScreen({ isSaved, businessData, isPreview })
         }
 
         let website;
-        console.log(link.substring(0,7));
-        if (link.substring(0,8) === 'https://') {
+        if (link?.substring(0,8) === 'https://') {
             website = link;
         } else {
             website = 'https://' + link;

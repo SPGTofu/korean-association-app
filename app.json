@@ -11,24 +11,6 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "doctor": {
-      "reactNativeDirectoryCheck": {
-        "exclude": [
-          "@expo/metro-runtime",
-          "0g",
-          "cross-spawn",
-          "dotenv",
-          "es-abstract",
-          "firebase",
-          "graphql",
-          "maplibre-gl",
-          "radar-sdk-js",
-          "react-native-radar",
-          "react-tag-input",
-          "webidl-conversions"
-        ]
-      }
-    },
     "ios": {
       "supportsTablet": true,
       "googleServicesFile": "./GoogleService-Info.plist",

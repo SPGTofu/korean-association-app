@@ -7,26 +7,31 @@ podfile_properties = JSON.parse(File.read(File.join(__dir__, 'Podfile.properties
 ENV['RCT_NEW_ARCH_ENABLED'] = podfile_properties['newArchEnabled'] == 'true' ? '1' : '0'
 ENV['EX_DEV_CLIENT_NETWORK_INSPECTOR'] = podfile_properties['EX_DEV_CLIENT_NETWORK_INSPECTOR']
 
-platform :ios, podfile_properties['ios.deploymentTarget'] || '15.1'
+platform :ios, podfile_properties['ios.deploymentTarget'] || '16.0'
 use_modular_headers! # added
-use_frameworks! # added
+$RNGoogleMobileAdsAsStaticFramework = true
+#use_frameworks! # added
 
 install! 'cocoapods',
   :deterministic_uuids => false
 
 prepare_react_native_project!
-
 target '417Korea' do
-  # added use_frameworks! # added :linkage => :static
+  use_frameworks! # added :linkage => :static
   use_expo_modules!
 
   # added
-  pod 'Firebase/Auth'
-  pod 'Firebase/Core'
-  pod 'Firebase/Storage'
-  pod 'Firebase/Firestore'
-
-
+  pod 'Firebase', :modular_headers => true
+  pod 'FirebaseCoreInternal', :modular_headers => true
+  pod 'FirebaseCore', :modular_headers => true
+  pod 'Firebase/Auth', :modular_headers => true
+  pod 'Firebase/Firestore', :modular_headers => true
+  pod 'Firebase/InAppMessaging', :modular_headers => true
+  pod 'Firebase/RemoteConfig', :modular_headers => true
+  pod 'FirebaseInstallations', :modular_headers => true
+  pod 'RecaptchaInterop', :modular_headers => true
+  pod 'GoogleUtilities', :modular_headers => true
+  
   if ENV['EXPO_USE_COMMUNITY_AUTOLINKING'] == '1'
     config_command = ['node', '-e', "process.argv=['', '', 'config'];require('@react-native-community/cli').run()"];
   else

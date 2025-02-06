@@ -2,5 +2,5 @@
 xcodebuild: error: Unable to find a destination matching the provided destination specifier:
 		{ id:5CC55C24-7E8E-4FD1-88CB-3A75B18D2A80 }
 
-	Ineligible destinations for the "koreanassociationapp" scheme:
+	Ineligible destinations for the "417Korea" scheme:
 		{ platform:iOS, id:dvtdevice-DVTiPhonePlaceholder-iphoneos:placeholder, name:Any iOS Device, error:iOS 18.2 is not installed. To use with Xcode, first download and install the platform }

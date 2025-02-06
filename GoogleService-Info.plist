@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//E N" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>243834615776-nc0e06o4uakmupjri1sqfi0mck8pd48l.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.243834615776-nc0e06o4uakmupjri1sqfi0mck8pd48l</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAmUrFP1bhFSDnnyVRLAABO9_f9fAJ9A_c</string>
+	<key>GCM_SENDER_ID</key>
+	<string>243834615776</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.417korea.app</string>
+	<key>PROJECT_ID</key>
+	<string>korean-association-app</string>
+	<key>STORAGE_BUCKET</key>
+	<string>korean-association-app.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:243834615776:ios:65f18dc2c43e5982949d85</string>
+</dict>
+</plist>

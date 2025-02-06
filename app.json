@@ -11,27 +11,56 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "exclude": [
+          "@expo/metro-runtime",
+          "0g",
+          "cross-spawn",
+          "dotenv",
+          "es-abstract",
+          "firebase",
+          "graphql",
+          "maplibre-gl",
+          "radar-sdk-js",
+          "react-native-radar",
+          "react-tag-input",
+          "webidl-conversions"
+        ]
+      }
+    },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.417-korea.app",
-      "newArchEnabled": true
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "bundleIdentifier": "com.417korea.app",
+      "newArchEnabled": false,
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff",
-        "newArchEnabled": true
+        "backgroundColor": "#ffffff"
       },
-      "package": "com.417-korea.app"
+      "package": "com.fouronesevenkorea.app",
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "pluggins": [
-      "expo-image-picker",
-      {
-        "photosPermission": "The app accesses your photos to upload online."
-      },
+    "plugins": [
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to upload online."
+        }
+      ],
       [
         "react-native-radar",
         {
@@ -46,13 +75,24 @@
         }
       ],
       [
-        "@maplibre/maplibre-react-native"
+        "expo-build-properties",
+        {
+          "ios": {
+            "userFrameworks": "static"
+          }
+        }
       ]
     ],
     "extra": {
       "eas": {
         "projectId": "479f78f7-3230-48a5-bfc0-f294dfb3fe8b"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/479f78f7-3230-48a5-bfc0-f294dfb3fe8b"
     }
   }
 }

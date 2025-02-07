@@ -22,7 +22,7 @@ export default function Saved({ navigation }) {
     const navigateToBusinessInHomeTab = (business) => {
         navigation.navigate('Home', {
             screen: 'InformationScreen',
-            params: {businessData: business}
+            params: {businessID: business.docID}
         });
     }
 

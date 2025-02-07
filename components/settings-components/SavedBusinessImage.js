@@ -8,7 +8,7 @@ export default function SavedBusinessImage({ business, style }) {
 
     useEffect(() => {
         const getImageUri = async () => {
-            const imageURL = await getPublishedImageFromStorage(business.docID, business.photos[0]);
+            const imageURL = business.photos[0];
             setImageUri(imageURL);    
         }        
         getImageUri();

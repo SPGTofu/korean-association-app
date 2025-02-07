@@ -254,15 +254,16 @@ export const sendBusinessDataToDatabase = async (businessData) => {
 // gets business by its name
 export const getPublishedBusinessByID = async (documentID) => {
     try {
+        console.log("documentID: ", documentID)
         const databaseCollectionRef = collection(FIREBASE_DB, "database");
         const docRef = doc(databaseCollectionRef, documentID);
         const snapshot = await getDoc(docRef);
     
         if (snapshot.exists()) {
-            // retrive images
+            // retreive images
             const photos = await Promise.all(
-                snapshot.data().photos.map((photoName) => 
-                    getPublishedImageFromStorage(documentID, photoName)
+                snapshot.data().photos.map((photoName) => {
+                    return getPublishedImageFromStorage(documentID, photoName)}
                 )
             );
 
@@ -293,8 +294,8 @@ export const getSavedBusinessesOfUser = async (user) => {
         // checks if user even exists
         if (userDoc.exists()) {
             let arrayOfSavedBusinesses = await Promise.all(
-                userDoc.data().saved.map((business) => 
-                    getPublishedBusinessByID(business)
+                userDoc.data().saved.map((business) => {
+                    return getPublishedBusinessByID(business)}
                 )
             );
             return arrayOfSavedBusinesses;

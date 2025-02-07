@@ -16,20 +16,22 @@ install! 'cocoapods',
 
 prepare_react_native_project!
 target '417Korea' do
+  pod 'RadarSDKMotion', '3.21.1'
   use_expo_modules!
 
   # added
-  pod 'Firebase', :modular_headers => true
-  pod 'FirebaseCoreInternal', :modular_headers => true
-  pod 'FirebaseCore', :modular_headers => true
+  pod 'Firebase/Core', :modular_headers => true
   pod 'Firebase/Auth', :modular_headers => true
   pod 'Firebase/Firestore', :modular_headers => true
-  pod 'Firebase/InAppMessaging', :modular_headers => true
+  pod 'Firebase/Storage', :modular_headers => true
+  pod 'Firebase/Installations', :modular_headers => true
   pod 'Firebase/RemoteConfig', :modular_headers => true
-  pod 'FirebaseInstallations', :modular_headers => true
-  pod 'RecaptchaInterop', :modular_headers => true
-  pod 'GoogleUtilities', :modular_headers => true
-  
+  pod 'Firebase/Messaging', :modular_headers => true
+  pod 'Firebase/InAppMessaging', :modular_headers => true
+
+  # added
+  use_frameworks! :linkage => :dynamic
+    
   if ENV['EXPO_USE_COMMUNITY_AUTOLINKING'] == '1'
     config_command = ['node', '-e', "process.argv=['', '', 'config'];require('@react-native-community/cli').run()"];
   else

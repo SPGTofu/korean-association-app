@@ -58,7 +58,7 @@ export const getPublishedImageFromStorage = async (documentID, imageName) => {
       const url = await getDownloadURL(imageRef);
       return url;
   } catch(error) {
-      console.error(error);
+      console.error(error);c
       return null;
   }
 }
